@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from google import genai
+from google.genai import types
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -25,7 +26,17 @@ def call_read(stage, prompt=None, filepaths=None):
             Do not include any explanations or commentary apart from the delimited questions,
             or you will fail the task.'''
         )
+        config = None
+
     elif stage == 2:
+        grounding_tool = types.Tool(
+            google_search=types.GoogleSearch()
+        )
+
+        config = types.GenerateContentConfig(
+            tools=[grounding_tool]
+        )
+
         system_prompt = (
             "You are continuing this same conversation between the AI helper and the user."
             "The conversation history is appended to the end of this prompt."
@@ -44,8 +55,8 @@ def call_read(stage, prompt=None, filepaths=None):
             At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
             DO NOT INSERT ANY NEW LINE BREAKS after this semicolon.
             Next, search the internet for relevant tutorial videos, guides or websites. 
-            Make sure that the links are up to date and exist, and there are multiple links for each step.
-            Delimit each link with only a semicolon in between. NO NEW LINE BREAKS 
+            Return the valid links URLs, make sure they are up to date and exist.
+            Delimit each URL with only a semicolon in between. NO NEW LINE BREAKS 
             Do not include any additional explanations or commentary after the links,
             or you will fail the task.
             '''
@@ -67,7 +78,8 @@ def call_read(stage, prompt=None, filepaths=None):
     # --- Send to chat (Gemini remembers previous context automatically) ---
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=contents
+        contents=contents,
+        config=config
     )
     text = response.text
 
