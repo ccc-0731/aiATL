@@ -2,8 +2,9 @@ import os;
 import json;
 
 UPLOAD_FOLDER = 'database\images'
-def saveFile(file, username:str) -> None:
-    file.save(os.path.join(UPLOAD_FOLDER, username))
+def saveFile(file, username:str, filename) -> None:
+
+    file.save(os.path.join(UPLOAD_FOLDER+ "\\" + username, filename))
 
 def eraseUserData(username:str):
     if os.path.exists(os.path.join(UPLOAD_FOLDER, username)):
@@ -56,7 +57,6 @@ def get_users_as_list() -> list:
 def add_new_user(username: str) -> None:
     db = get_db_as_dict()
     db[username] = {}
-    os.chmod(os.path.join(UPLOAD_FOLDER, username),110)
     os.mkdir(os.path.join(UPLOAD_FOLDER, username))
     write_to_db(db)
 

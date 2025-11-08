@@ -78,19 +78,17 @@ def uploadFile():
         if file.filename == '':
             flash('No selected file')
             return redirect(url_for('index'))
-        #
+
         if file and allowed_file(file.filename):
             #makes the filename safe so no malware
             filename = secure_filename(file.filename)
             #saves the file to the images folder in database
-            DAL.saveFile(file, session["username"])
+            DAL.saveFile(file, session["username"],filename)
             
             #Gemini Stuff
-            questionsRaw: str = gemini.call_read(stage=1, filepaths=file)
-            
-            questionsList: list[str] = questionsRaw.split
+            questionsList: list[str] = gemini.call_read(stage=1, filepaths=file)
             print(questionsList)
-            return render_template("questions.html", questionsList)
+            return render_template("questions.html")
             
     return redirect(url_for('/'))
         
@@ -110,13 +108,6 @@ def getSolutions():
     DAL.eraseUserData(username)
     return render_template(url_for("solutions"))
 
-
-
-
-
-
-# @app.route("/soulutions", methods=['GET','POST'])
-# def presentSolutions():
 
 
 if __name__ == "__main__":
