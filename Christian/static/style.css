@@ -33,7 +33,7 @@ html, body {
 
 /* === BODY THEMES === */
 body.lightmode {
-  background: linear-gradient(120deg, var(--bg-light), #c8d0e3); /* or ffffff to make the gif blend in better in light mode */
+  background: linear-gradient(120deg, var(--bg-light), #c8d0e3);
   color: var(--text-light);
 }
 
@@ -42,7 +42,7 @@ body.darkmode {
   color: var(--text-dark);
 }
 
-/* === GRAIN OVERLAY === */
+/* === FILM-GRAIN OVERLAY === */
 body::before {
   content: "";
   position: fixed;
@@ -51,9 +51,11 @@ body::before {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  background: url("https://grainy-gradients.vercel.app/noise.svg");
-  opacity: 0.15;
-  z-index: 1;
+  background-image: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
+  background-repeat: repeat;
+  opacity: 0.25;
+  z-index: 9999;
+  mix-blend-mode: overlay;
 }
 
 /* === CONTAINER === */
@@ -100,7 +102,7 @@ body.darkmode h2 {
   color: rgba(255,255,255,0.8);
 }
 
-/* buttons */
+/* === BUTTONS === */
 .btn {
   display: inline-block;
   padding: 0.8rem 2rem;
@@ -175,7 +177,6 @@ body.darkmode input[type="file"]:hover {
   gap: 1rem;
   margin-top: 2.5rem;
 }
-
 
 /* === ANIMATIONS === */
 @keyframes fadeUp {
