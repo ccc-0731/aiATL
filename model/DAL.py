@@ -7,12 +7,10 @@ def saveFile(file, username:str, filename) -> None:
     file.save(os.path.join(UPLOAD_FOLDER+ "/" + username, filename))
 
 def eraseUserData(username:str):
-    if os.path.exists(os.path.join(UPLOAD_FOLDER, username)):
-        os.remove(os.path.join(UPLOAD_FOLDER, username))
-    os.mkdir(os.path.join(UPLOAD_FOLDER, username))
+    if os.path.exists(os.path.join(UPLOAD_FOLDER+ "/" , username)):
+        os.remove(os.path.join(UPLOAD_FOLDER+ "/" , username))
+    os.mkdir(os.path.join(UPLOAD_FOLDER+ "/" , username))
 
-def getFiles(username:str):
-    return 
 def set_sb() -> None:
     """
     sets up the database
@@ -65,5 +63,7 @@ def get_users_as_list() -> list:
     return list(db)
 
 def get_file_paths(username:str) -> list[str]:
-    filesnames:list[str] = os.listdir(UPLOAD_FOLDER + "/" + username)
-    return [UPLOAD_FOLDER + "/" + x for x in filesnames]
+    filesnames:list[str] = os.listdir(os.path.join(UPLOAD_FOLDER+ "/" + username))
+    print(1)
+    print([UPLOAD_FOLDER + "/" + username + "/" + x for x in filesnames])
+    return [UPLOAD_FOLDER + "/" + username + "/" + x for x in filesnames]
