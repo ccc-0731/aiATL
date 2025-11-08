@@ -41,18 +41,14 @@
     </form>
   </div>
 
-  <!-- ========================== -->
-  <!-- LOADING BEAR SCREEN -->
-  <!-- ========================== -->
+  <!--Loading Bear-->
   <div id="loadingScreen" style="display:none; text-align:center; margin-top:50px;">
     <h2 style="font-size:40px;">Questions from the AI</h2>
-    <img src="BearLoading.gif" alt="Bear Loading Animation" width="400">
+    <img src="{{ url_for('static', filename='image/BearLoading.gif') }}" alt="Bear Loading Animation" width="400">
     <p class="mt-3">Analyzing your image, please wait...</p>
   </div>
 
-  <!-- ========================== -->
-  <!-- JAVASCRIPT LOGIC -->
-  <!-- ========================== -->
+
   <script>
     const uploadForm = document.getElementById('uploadForm');
     const uploadContainer = document.getElementById('uploadContainer');
