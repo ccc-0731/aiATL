@@ -76,7 +76,7 @@ def call_read(stage, prompt=None, filepaths=None):
         history.append(f"User: {prompt}")
         history.append(f"AI: {text}")
     
-    text = text.split(";")
+    text = [x for x in text.split(";") if x != ""]
     return text
 
 #testing code
