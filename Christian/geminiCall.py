@@ -12,7 +12,7 @@ def call_read(prompt=None, filepaths=None):
     system_prompt = '''The user is experiencing problems, as shown in the images. 
         Analyze the problems you find in these images (taken from different angles, or showing different aspects of the issue). 
         Ask the user questions to provide more context about the problems you detect. 
-        The questions must be independent, and all questions should be delimited by ASCII 31.
+        The questions must be independent, and all questions should be delimited by a semicolon. Ask as few questions as necessary.
         Do not include any explanations or commentary apart from the delimited questions, or you will fail the task.'''
 
     # --- Combine with user prompt if provided ---
@@ -39,4 +39,4 @@ def call_read(prompt=None, filepaths=None):
     return response.text
 
 if __name__ == "__main__":
-    print(call_read("these are some confusing georgia tech cs prereq maps", ["test.png", "test1.png"]))
+    print(call_read("these are some confusing georgia tech cs prereq maps", ["test.png", "test1.png"]).split(";"))
