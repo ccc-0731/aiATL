@@ -44,7 +44,7 @@ def call_read(stage, prompt=None, filepaths=None):
             At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
             Next, search the internet for relevant tutorial videos, guides or websites. 
             Make sure that the links are up to date and exist, and there are multiple links for each step.
-            Delimit each link with a semicolon. 
+            Delimit each link with only a semicolon in between. NO NEW LINE BREAKS 
             Do not include any additional explanations or commentary after the links,
             or you will fail the task.
             '''
