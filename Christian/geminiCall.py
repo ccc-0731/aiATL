@@ -58,12 +58,11 @@ def call_read(stage, prompt=None, filepaths=None):
         full_prompt = system_prompt
 
     # --- Handle (multiple) image uploads ---
+    contents = [full_prompt] + history # include previous turns
 
     # Upload multiple files
     uploaded_files = [client.files.upload(file=path) for path in filepaths]
     contents.append(uploaded_files)
-
-    contents = [full_prompt] + history # include previous turns
 
     # --- Send to chat (Gemini remembers previous context automatically) ---
     response = client.models.generate_content(
