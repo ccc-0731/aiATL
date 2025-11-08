@@ -1,80 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Repair Solutions</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
     <style>
-        body {
-            font-family: system-ui, Arial;
-            padding: 18px;
-            background: linear-gradient(to bottom, #87ceeb, #ffffff) no-repeat center center fixed;
+        /* only adds visual layout tweaks */
+        .uploaded-images {
+            text-align: center;
+            margin-bottom: 2rem;
         }
-        .solution-container {
-            background: rgba(255, 255, 255, 0.95);
+        .uploaded-images img {
+            max-width: 180px;
+            max-height: 180px;
+            object-fit: cover;
             border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 10px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
         }
-        .solution {
-            border: 1px solid #eee;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        .solution-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        .solution-meta {
-            color: #666;
-            font-size: .85rem;
-            margin-bottom: 8px;
-        }
-        .solution-steps {
-            list-style-position: inside;
+        .solution-list {
+            list-style: decimal inside;
             padding-left: 0;
+            margin-top: 1rem;
+        }
+        .solution-item {
+            margin-bottom: 1.5rem;
         }
         .solution-step {
-            margin: 8px 0;
-            padding: 8px;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-        .btn {
-            padding: 8px 16px;
+            background: rgba(255,255,255,0.15);
             border-radius: 6px;
-            cursor: pointer;
+            padding: 6px 12px;
+            margin: 6px 0;
         }
-        .btn-primary {
-            background: #0b84ff;
-            color: #fff;
-            border: none;
-        }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        .error {
-            color: #dc3545;
-            padding: 10px;
-            border-radius: 4px;
-            background: #ffe5e5;
-            margin: 10px 0;
+        body.darkmode .solution-step {
+            background: rgba(0,0,0,0.25);
         }
     </style>
 </head>
-<body>
+
+<body class="darkmode">
     <div class="container">
-        {% for answer in answers%}
+        <h1 class="text-center">Repair Solutions</h1>
+
+        <!-- uploaded images on top -->
+        {% if uploaded_images %}
+        <div class="uploaded-images">
+            {% for img in uploaded_images %}
+                <img src="{{ img }}" alt="Uploaded image">
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- solutions container -->
+        <div id="solutions" class="mt-4">
+            <div class="loading text-center">Loading solutions...</div>
+        </div>
+
+        <!-- navigation buttons -->
+        <div class="button-row">
+            <a href="/" class="btn btn-danger">Back to Start</a>
+            <button onclick="refreshSolutions()" class="btn btn-custom">Refresh Solutions</button>
+        </div>
+
+        {% for answer in answers %}
             <p>{{answer}}</p>
-        {%endfor%}
+        {% endfor %}
     </div>
 
+    <script>
+        const SOLUTIONS_URL = '/solutions';  // GET endpoint for fetching solutions
+
+        async function fetchSolutions() {
+            const container = document.getElementById('solutions');
+
+            try {
+                const res = await fetch(SOLUTIONS_URL, {cache: 'no-store'});
+                if (!res.ok) throw new Error('Server response ' + res.status);
+                const data = await res.json();
+
+                if (!data || (!data.solutions && !data.error)) {
+                    container.innerHTML = '<div class="loading text-center mt-3">No solutions available yet. Please check back after answering all questions.</div>';
+                    return;
+                }
+
+                if (data.error) {
+                    container.innerHTML = `<div class="error alert alert-danger mt-3">${escapeHtml(data.error)}</div>`;
+                    return;
+                }
+
+                // Render all solutions as one numbered list
+                container.innerHTML = `
+                    <ol class="solution-list">
+                        ${data.solutions.map(solution => `
+                            <li class="solution-item">
+                                <div class="block">
+                                    <div class="solution-title fw-bold fs-5 mb-2">${escapeHtml(solution.title)}</div>
+                                    <div class="solution-meta mb-2">
+                                        Difficulty: ${escapeHtml(solution.difficulty || 'N/A')} •
+                                        Time required: ${escapeHtml(solution.time || 'N/A')}
+                                    </div>
+                                    <div class="solution-content">
+                                        ${solution.description ? `<p>${escapeHtml(solution.description)}</p>` : ''}
+                                        ${solution.steps ? `
+                                            <ol class="solution-steps text-start">
+                                                ${solution.steps.map(step => `
+                                                    <li class="solution-step">${escapeHtml(step)}</li>
+                                                `).join('')}
+                                            </ol>
+                                        ` : ''}
+                                    </div>
+                                    ${solution.url ? `
+                                        <div class="mt-3 text-center">
+                                            <a href="${escapeHtml(solution.url)}" target="_blank" class="btn btn-custom btn-sm">
+                                                View Full Guide
+                                            </a>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ol>
+                `;
+
+            } catch (err) {
+                console.error('fetchSolutions error', err);
+                container.innerHTML = `
+                    <div class="error alert alert-danger mt-3">
+                        Failed to load solutions: ${escapeHtml(err.message)}
+                    </div>
+                `;
+            }
+        }
+
+        function escapeHtml(s) {
+            return s ? s.replace(/[&<>"]/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;'
+            }[c])) : '';
+        }
+
+        function refreshSolutions() {
+            const container = document.getElementById('solutions');
+            container.innerHTML = '<div class="loading text-center mt-3">Refreshing solutions...</div>';
+            fetchSolutions();
+        }
+
+        // Initial load
+        fetchSolutions();
+        setInterval(fetchSolutions, 10000);
+    </script>
 </body>
 </html>
