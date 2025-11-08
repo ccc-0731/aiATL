@@ -1,10 +1,10 @@
 import os;
 import json;
 
-UPLOAD_FOLDER = 'database\images'
+UPLOAD_FOLDER = 'database/images'
 def saveFile(file, username:str, filename) -> None:
 
-    file.save(os.path.join(UPLOAD_FOLDER+ "\\" + username, filename))
+    file.save(os.path.join(UPLOAD_FOLDER+ "/" + username, filename))
 
 def eraseUserData(username:str):
     if os.path.exists(os.path.join(UPLOAD_FOLDER, username)):
