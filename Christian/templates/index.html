@@ -5,74 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Upload</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-    <style>
-        body.lightmode {
-            background: linear-gradient(to bottom, #87ceeb, #ffffff) no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body.darkmode {
-            background: linear-gradient(to bottom, #000428, #004e92) no-repeat center center fixed;
-            background-size: cover;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .container {
-            margin-top: 5%;
-            background: rgba(248, 250, 210, 0.9); 
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        h1, h2 {
-            font-family: 'Helvetica', sans-serif;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        h1 {
-            color: #fbb034;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-        }
-
-        h2 {
-            color: #228b22;
-        }
-
-        .btn-custom {
-            background-color: #fbb034;
-            border: none;
-            color: white;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            background-color: #ffa72b;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border: none;
-        }
-
-        .btn-secondary {
-            background-color: #228b22;
-            border: none;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #333;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/style.css">
+    
 </head>
 <body class="lightmode">
     <div class="container">

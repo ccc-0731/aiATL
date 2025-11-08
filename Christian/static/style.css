@@ -1,95 +1,175 @@
+/* === FONT + RESET === */
+@import url('https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap');
 
-/* light mode */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Helvetica', sans-serif;
+  scroll-behavior: smooth;
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+/* === COLOR THEMES === */
+:root {
+  /* Light mode */
+  --bg-light: #f8f7f3;
+  --text-light: #161616;
+  --accent-light: #ff7f50; /* coral orange */
+  --accent2-light: #2b50aa; /* bold blue */
+
+  /* Dark mode */
+  --bg-dark: #0d0d0d;
+  --text-dark: #f5f5f5;
+  --accent-dark: #ffb84c; /* warm yellow */
+  --accent2-dark: #b64fff; /* magenta purple */
+}
+
+/* === BODY THEMES === */
 body.lightmode {
-    background: linear-gradient(to bottom, #87ceeb, #ffffff) no-repeat center center fixed; /* Sky blue to white gradient */
-    background-size: cover;
-    color: #333;
-    font-family: 'Arial', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
 }
 
+body.darkmode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+/* === CONTAINER === */
 .container {
-    margin-top: 5%;
-    background: rgba(255, 250, 210, 0.9); /* Soft pastel yellow, resembling sunny vibes */
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 900px;
+  margin: 8vh auto;
+  padding: 4rem 3rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+  animation: fadeUp 0.9s ease-out both;
 }
 
-h1, h2 {
-    font-family: 'Helvetica', sans-serif;
-    font-weight: bold;
-    text-align: center;
-}
-
+/* === TYPOGRAPHY === */
 h1 {
-    color: #fbb034; /* Golden retriever fur-inspired orange */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 1rem;
 }
 
 h2 {
-    color: #228b22; /* Deep green to evoke nature */
+  font-size: 1.3rem;
+  font-weight: 500;
+  opacity: 0.8;
+  margin-bottom: 2.5rem;
+}
+
+/* === BUTTONS === */
+.btn {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
 }
 
 .btn-custom {
-    background-color: #fbb034;
-    border: none;
-    color: white;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.btn-custom:hover {
-    background-color: #ffa72b;
+  background-color: var(--accent-light);
+  color: #fff;
+  border: none;
 }
 
 .btn-danger {
-    background-color: #dc3545;
-    border: none;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
 }
 
-.btn-secondary {
-    background-color: #228b22;
-    border: none;
+.btn-custom:hover,
+.btn-danger:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: brightness(1.1);
 }
 
-footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-/* dark mode */
-body.darkmode {
-    background: linear-gradient(to bottom, #000428, #004e92) no-repeat center center fixed; /* dark blue gradient */
-    background-size: cover;
-    color: #fff;
-    font-family: 'Arial', sans-serif;
-}
-
-body.darkmode .container {
-    background: rgba(30, 30, 30, 0.85); /* darker container background */
-    color: #f0f0f0;
-}
-
-body.darkmode h1 {
-    color: #ffcc00; /* soft yellow for contrast */
-    text-shadow: none;
-}
-
-body.darkmode h2 {
-    color: #9acd32; /* light green */
-}
-
+/* === DARK MODE BUTTON COLORS === */
 body.darkmode .btn-custom {
-    background-color: #ffcc00; /* brighter yellow-orange for dark background */
-    color: #000;
+  background-color: var(--accent-dark);
+  color: var(--text-dark);
 }
 
 body.darkmode .btn-custom:hover {
-    background-color: #ffd633;
+  background-color: var(--accent2-dark);
+  color: #fff;
 }
 
-body.darkmode footer {
-    color: #ddd;
+/* === FILE INPUT === */
+input[type="file"] {
+  margin-top: 0.8rem;
+  width: 100%;
+  padding: 0.9rem;
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+input[type="file"]:hover {
+  border-color: var(--accent-light);
+}
+
+body.darkmode input[type="file"] {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+}
+body.darkmode input[type="file"]:hover {
+  border-color: var(--accent-dark);
+}
+
+/* === BUTTON ROW === */
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+
+/* === FOOTER === */
+footer {
+  text-align: center;
+  margin-top: 3rem;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === KUROS-STYLE COLOR BLOCK SECTIONS === */
+section {
+  margin-bottom: 6rem;
+}
+.block {
+  background: linear-gradient(120deg, var(--accent-light), var(--accent2-light));
+  color: #fff;
+  padding: 2rem 3rem;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+body.darkmode .block {
+  background: linear-gradient(120deg, var(--accent-dark), var(--accent2-dark));
 }
