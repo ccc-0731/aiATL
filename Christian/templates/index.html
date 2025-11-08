@@ -13,11 +13,14 @@
 </head>
 
 <body class="lightmode">
-  <div class="container" id="upload">
+  <!-- ========================== -->
+  <!-- INTRO SCREEN -->
+  <!-- ========================== -->
+  <div class="container" id="uploadContainer">
     <h1>Welcome back, username!</h1>
     <h2>What's going wrong? We can help.</h2>
 
-    <form action="/upload_image" method="POST" enctype="multipart/form-data" class="mt-4">
+    <form id="uploadForm" method="POST" enctype="multipart/form-data" class="mt-4">
       <div class="mb-3">
         <label for="image_input" class="form-label">Upload Image(s):</label>
         <input
@@ -26,8 +29,8 @@
           name="image_input"
           class="form-control"
           accept="image/*"
-          capture="camera"
           multiple
+          required
         />
       </div>
 
@@ -38,7 +41,57 @@
     </form>
   </div>
 
+  <!-- ========================== -->
+  <!-- LOADING BEAR SCREEN -->
+  <!-- ========================== -->
+  <div id="loadingScreen" style="display:none; text-align:center; margin-top:50px;">
+    <h2 style="font-size:40px;">Questions from the AI</h2>
+    <img src="BearLoading.gif" alt="Bear Loading Animation" width="400">
+    <p class="mt-3">Analyzing your image, please wait...</p>
+  </div>
+
+  <!-- ========================== -->
+  <!-- JAVASCRIPT LOGIC -->
+  <!-- ========================== -->
+  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const uploadContainer = document.getElementById('uploadContainer');
+    const loadingScreen = document.getElementById('loadingScreen');
+
+    uploadForm.addEventListener('submit', async (event) => {
+      event.preventDefault(); // stop page from immediately reloading
+
+      // Hide the intro form
+      uploadContainer.style.display = 'none';
+      // Show the loading bear
+      loadingScreen.style.display = 'block';
+
+      const formData = new FormData(uploadForm);
+
+      try {
+        // Send to backend for AI processing
+        const response = await fetch('/upload_image', {
+          method: 'POST',
+          body: formData,
+        });
+
+        // Wait until the backend finishes its recognition & clarification
+        if (response.ok) {
+          // Once done, redirect to questions page
+          window.location.href = 'questions.html';
+        } else {
+          throw new Error('Error from server: ' + response.statusText);
+        }
+      } catch (error) {
+        console.error('Error uploading:', error);
+        alert('Something went wrong while processing. Please try again.');
+        // Return to intro screen if it fails
+        loadingScreen.style.display = 'none';
+        uploadContainer.style.display = 'block';
+      }
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
