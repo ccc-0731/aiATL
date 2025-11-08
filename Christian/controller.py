@@ -4,7 +4,6 @@ from werkzeug.utils import secure_filename
 from model import DAL
 from werkzeug.utils import secure_filename
 import geminiCall as gemini
-
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
@@ -15,7 +14,6 @@ app.secret_key = "hi"
 def allowed_file(filename) -> list[str]:
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
 #renders the index page
 #if not logged in sends user to login
 @app.route('/')
@@ -47,6 +45,9 @@ def login():
 #logs you out
 @app.route('/logout')
 def logout():
+    if "logged_in" not in session:
+        #redirects to login
+        return render_template('login_form.html')
     #removes all info from cookie
     session.pop("username", None)
     session.pop("logged_in", None)
@@ -55,17 +56,20 @@ def logout():
 #uploads the file to 
 @app.route("/upload_image", methods=['GET', 'POST'])
 def uploadFile():
+    if "logged_in" not in session:
+        #redirects to login
+        return render_template('login_form.html')
     FORMNAME = 'file'
     if request.method == 'POST':
         if FORMNAME not in request.files:
             flash('No file part')
-            return redirect(request.url)
+            return redirect(url_for('questions'))
         file = request.files[FORMNAME]
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
             flash('No selected file')
-            return redirect(request.url)
+            return redirect(url_for('/'))
         #
         if file and allowed_file(file.filename):
             #makes the filename safe so no malware
@@ -74,20 +78,20 @@ def uploadFile():
             DAL.saveFile(file, session["username"])
             
             #Gemini Stuff
+            DELIMITER: chr = ascii(32)
             questionsRaw: str = gemini.call_read(file)
-            presentQuestions()
-            return redirect(url_for('questions'))
+            
+            questionsList: list[str] = questionsRaw.split
+            
+            return render_template(url_for("questions"), questionsList)
             
     return
 
-
-@app.route("/questions", methods=['GET','POST'])
-def presentQuestions():
     
 
 
-@app.route("/soulutions", methods=['GET','POST'])
-def presentSolutions():
+# @app.route("/soulutions", methods=['GET','POST'])
+# def presentSolutions():
 
 
 if __name__ == "__main__":
