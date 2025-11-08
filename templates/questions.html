@@ -27,7 +27,7 @@
             <div class="d-flex justify-content-between mt-4">
                 <a href="/logout" class="btn btn-danger">Logout</a>
                 <input type="submit" value="Submit">
-              
+
             </div>
         </form>
     </div>
@@ -125,56 +125,16 @@
             return s ? s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) : '';
         }
 
-        function markSeen(id){
-            // visually mark as read — in a real app you'd POST to the server
-            const q = container.querySelector(`.question[data-qid="${id}"]`);
-            if (q) q.style.opacity = '0.6';
-        }
+    function markSeen(id){
+      // visually mark as read — in a real app you'd POST to the server
+      const q = container.querySelector(`.question[data-qid="${id}"]`);
+      if (q) q.style.opacity = '0.6';
+    }
 
-        // Start polling
-        fetchQuestions();
-        setInterval(fetchQuestions, 5000); // poll every 5s
+    // Start polling
+    fetchQuestions();
+    setInterval(fetchQuestions, 5000); // poll every 5s
 
-/*
-    const testQuestions = [
-        {
-            id: 1,
-            text: "Have you tried taking it to the shop instead of asking an AI bot, you idiot.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 2,
-            text: "Another question from the AI.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 3,
-            text: "Another question from the AI.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 4,
-            text: "Have you tried taking it to the shop instead of asking an AI bot, you idiot.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 5,
-            text: "Another question from the AI.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-        {
-            id: 6,
-            text: "Another question from the AI.",
-            asked_by: "AI",
-            created_at: new Date().toISOString()
-        },
-    ];
-*/
 
         // renderQuestions(testQuestions);
     </script>
