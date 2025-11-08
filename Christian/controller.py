@@ -89,7 +89,7 @@ def uploadFile():
             questionsRaw: str = gemini.call_read(file)
             
             questionsList: list[str] = questionsRaw.split
-            
+            print()
             return render_template("questions.html", questionsList)
             
     return redirect(url_for('/'))
