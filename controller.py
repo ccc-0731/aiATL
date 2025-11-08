@@ -99,7 +99,7 @@ def uploadFile():
         print(questionsList)
         return render_template('questions.html',testQuestions=questionsList)
             
-    return redirect(url_for('/'))
+    return redirect(url_for('index'))
         
 @app.route("/solution", methods=['GET',"POST"])
 def getSolutions():
@@ -115,7 +115,7 @@ def getSolutions():
     solutions:list[str] = gemini.call_read(2,"|".join(answers),)
     
     DAL.eraseUserData(username)
-    return render_template(url_for("solutions"),answers=solutions)
+    return render_template(url_for("solutions"),answers=["kjgf"])
 
 
 
