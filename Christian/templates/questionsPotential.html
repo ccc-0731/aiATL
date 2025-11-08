@@ -1,0 +1,114 @@
+<!doctype html> <!--take anything you don't want and delete-I'm not sure-->
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Clarifying Questions</title>
+  <style>
+    body{font-family:system-ui,Arial;padding:18px}
+    .question{border:1px solid #eee;padding:12px;border-radius:8px;margin:10px 0}
+    .meta{color:#666;font-size:.85rem}
+    textarea{width:100%;min-height:70px;margin-top:8px}
+    .btn{padding:8px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    .btn.primary{background:#0b84ff;color:#fff;border:0}
+  </style>
+</head>
+<body>
+  <h2>Questions from the AI</h2>
+  <div id="questions">Loading…</div>
+
+  <script>
+    const QUESTIONS_URL = '/questions';    // GET -> [{id,text,...}]
+    const ANSWER_URL = '/answers';         // POST -> { question_id, answer }
+
+    const container = document.getElementById('questions');
+    let seenIds = new Set();
+
+    function renderQuestions(list){
+      if (!list || list.length === 0) {
+        container.innerHTML = '<p>No questions right now.</p>';
+        return;
+      }
+      // Render newest first
+      container.innerHTML = '';
+      list.forEach(q => {
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.dataset.qid = q.id;
+        div.innerHTML = `
+          <div class="meta">#${q.id} • ${q.asked_by || 'AI'} • ${new Date(q.created_at).toLocaleString()}</div>
+          <div class="text" style="margin-top:6px">${escapeHtml(q.text)}</div>
+          <div style="margin-top:8px">
+            <textarea placeholder="Type your answer..." data-qid="${q.id}"></textarea>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="btn submit" data-qid="${q.id}">Submit answer</button>
+              <button class="btn" data-qid="${q.id}" onclick="markSeen('${q.id}')">Mark read</button>
+            </div>
+            <div class="status" style="margin-top:8px;color:#0a0"></div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      // Hook up submit listeners
+      Array.from(container.querySelectorAll('.submit')).forEach(button => {
+        button.addEventListener('click', onSubmit);
+      });
+    }
+
+    async function fetchQuestions(){
+      try {
+        const res = await fetch(QUESTIONS_URL, {cache: 'no-store'});
+        if (!res.ok) throw new Error('Server response '+res.status);
+        const list = await res.json();
+        // Simple dedupe: only re-render if new id appears
+        const ids = new Set(list.map(q => q.id));
+        const isNew = Array.from(ids).some(id => !seenIds.has(id));
+        if (isNew) {
+          list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+          renderQuestions(list);
+          seenIds = ids;
+        }
+      } catch (err) {
+        console.error('fetchQuestions error', err);
+        // Optionally show error state in UI
+      }
+    }
+
+    async function onSubmit(ev){
+      const qid = ev.currentTarget.dataset.qid;
+      const textarea = container.querySelector(`textarea[data-qid="${qid}"]`);
+      const answer = textarea.value.trim();
+      if (!answer) { alert('Please type an answer'); return; }
+      const payload = { question_id: qid, answer };
+      try {
+        const res = await fetch(ANSWER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const body = await res.json();
+        const statusEl = container.querySelector(`.question[data-qid="${qid}"] .status`);
+        statusEl.textContent = 'Answer saved';
+        textarea.value = '';
+      } catch (err) {
+        alert('Failed to submit answer: ' + err.message);
+      }
+    }
+
+    function escapeHtml(s){
+      return s ? s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) : '';
+    }
+
+    function markSeen(id){
+      // visually mark as read — in a real app you'd POST to the server
+      const q = container.querySelector(`.question[data-qid="${id}"]`);
+      if (q) q.style.opacity = '0.6';
+    }
+
+    // Start polling
+    fetchQuestions();
+    setInterval(fetchQuestions, 5000); // poll every 5s
+  </script>
+</body>
+</html>

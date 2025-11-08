@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Camera Capture</title>
+  <style>
+    body{font-family:system-ui,-apple-system,Roboto,Arial;padding:18px} <!--Sets the font for the body-->
+    .capture-btn{display:inline-flex;align-items:center;gap:8px;background:#0b84ff;color:#fff;padding:10px 14px;border-radius:8px;border:none;cursor:pointer}
+    .capture-btn svg{width:20px;height:20px}
+    .hint{color:#666;margin-top:8px}
+    .preview{margin-top:16px}
+    .preview img{max-width:100%;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+    .controls{margin-top:8px;display:flex;gap:8px}
+    .btn{padding:8px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
+    .btn.primary{background:#0b84ff;color:#fff;border-color:transparent}
+    .meta{margin-top:8px;color:#444;font-size:.9rem}
+  </style>
+</head>
+<body>
+  <h2>Capture a photo</h2>
+
+  <!-- Hidden input: capture="environment" hints to open rear camera on mobile -->
+  <input id="fileInput" type="file" accept="image/*" capture="environment" style="display:none" />
+
+  <button id="openCamera" class="capture-btn" aria-label="Open camera or choose photo">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+      <path d="M4 7h3l2-2h6l2 2h3v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="1.2"/>
+    </svg>
+    Take / Choose Photo
+  </button>
+
+  <div class="hint">Tap the button to open the native camera (or photo library). After capture you'll see a preview and can retake or use the image.</div>
+
+  <div id="preview" class="preview" hidden>
+    <div id="imgWrap"><img id="previewImg" alt="preview" src=""/></div>
+    <div class="meta" id="imgMeta"></div>
+    <div class="controls">
+      <button id="retake" class="btn">Retake / Replace</button>
+      <button id="usePhoto" class="btn primary">Use photo</button>
+    </div>
+  </div>
+
+  <script>
+    // Minimal, dependency-free camera/file capture flow
+    const fileInput = document.getElementById('fileInput');
+    const openCamera = document.getElementById('openCamera');
+    const preview = document.getElementById('preview');
+    const previewImg = document.getElementById('previewImg');
+    const imgMeta = document.getElementById('imgMeta');
+    const retake = document.getElementById('retake');
+    const usePhoto = document.getElementById('usePhoto');
+
+    const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
+
+    openCamera.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (ev) => {
+      const f = ev.target.files && ev.target.files[0];
+      if (!f) return;
+      if (!f.type.startsWith('image/')){ alert('Please select an image file.'); return; }
+      if (f.size > MAX_BYTES){ alert('Image is larger than 5MB. Please choose a smaller image.'); return; }
+
+      const url = URL.createObjectURL(f);
+      previewImg.src = url;
+      preview.hidden = false;
+      imgMeta.textContent = `${f.name} — ${Math.round(f.size/1024)} KB`;
+
+      const tmp = new Image();
+      tmp.onload = () => {
+        imgMeta.textContent += ` • ${tmp.naturalWidth}×${tmp.naturalHeight}`;
+        URL.revokeObjectURL(url);
+      };
+      tmp.src = url;
+
+      // attach file for later use
+      preview._file = f;
+    });
+
+    retake.addEventListener('click', () => {
+      fileInput.value = '';
+      preview.hidden = true;
+      previewImg.src = '';
+      preview._file = null;
+      fileInput.click();
+    });
+
+    usePhoto.addEventListener('click', async () => {
+      const f = preview._file;
+      if (!f) return alert('No image selected');
+
+      // Create a small client-side resized preview (max 1024px) and send to parent via postMessage.
+      // Parent page (when embedding via iframe) can listen for the message and handle upload or display.
+      const url = URL.createObjectURL(f);
+      const img = new Image();
+      img.src = url;
+      await img.decode().catch(() => {});
+
+      const maxDim = 1024;
+      let { naturalWidth: w, naturalHeight: h } = img;
+      if (!w || !h) { w = 800; h = 600; }
+      const scale = Math.min(1, maxDim / Math.max(w, h));
+      const cw = Math.round(w * scale);
+      const ch = Math.round(h * scale);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, cw, ch);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      URL.revokeObjectURL(url);
+
+      const message = {
+        type: 'capture:photo',
+        filename: f.name,
+        size: f.size,
+        width: w,
+        height: h,
+        preview: dataUrl,
+      };
+
+      // Send to parent window. In production replace '*' with the parent's origin.
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(message, '*');
+        alert('Photo sent to parent window.');
+      } else {
+        // No parent (opened directly) — just notify the user
+        alert(`Ready to upload: ${f.name} (${Math.round(f.size/1024)} KB)`);
+      }
+    });
+  </script>
+</body>
+</html>
