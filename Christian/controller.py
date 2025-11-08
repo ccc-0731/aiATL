@@ -106,14 +106,14 @@ def getSolutions():
         return render_template('login_form.html')
     username:str = session["username"]
     answers:list[str] = []
-    for value in requests.values():
-        value.append(value)
+    for value in request.values:
+        answers.append(value)
     #files = DAL.getFiles(username)
-
-    solutions:list[str] = gemini.call_read(2,answers.join("|"),)
-    username = session["username"]
+    filePaths:list[str] = DAL.get_file_paths(username)
+    solutions:list[str] = gemini.call_read(2,"|".join(answers),)
+    
     DAL.eraseUserData(username)
-    return render_template(url_for("solutions"))
+    return render_template(url_for("solutions"),answers=solutions)
 
 
 
