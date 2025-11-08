@@ -12,18 +12,20 @@ html, body {
   font-family: 'Helvetica', sans-serif;
   scroll-behavior: smooth;
   transition: background 0.5s ease, color 0.5s ease;
+  position: relative;
+  overflow-x: hidden;
 }
 
 /* === COLOR THEMES === */
 :root {
   /* Light mode */
-  --bg-light: #f8f7f3;
+  --bg-light: #fffdf7;
   --text-light: #161616;
-  --accent-light: #ff7f50; /* coral orange */
-  --accent2-light: #2b50aa; /* bold blue */
+  --accent-light: #6283ae; 
+  --accent2-light: #2b50aa; 
 
   /* Dark mode */
-  --bg-dark: #0d0d0d;
+  --bg-dark: #050505;
   --text-dark: #f5f5f5;
   --accent-dark: #ffb84c; /* warm yellow */
   --accent2-dark: #b64fff; /* magenta purple */
@@ -31,34 +33,55 @@ html, body {
 
 /* === BODY THEMES === */
 body.lightmode {
-  background: var(--bg-light);
+  background: linear-gradient(120deg, var(--bg-light), #c8d0e3); /* or ffffff to make the gif blend in better in light mode */
   color: var(--text-light);
 }
 
 body.darkmode {
-  background: var(--bg-dark);
+  background: linear-gradient(135deg, var(--bg-dark), #1a1a1c);
   color: var(--text-dark);
+}
+
+/* === GRAIN OVERLAY === */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.15;
+  z-index: 1;
 }
 
 /* === CONTAINER === */
 .container {
   max-width: 900px;
-  margin: 8vh auto;
+  margin: 10vh auto;
   padding: 4rem 3rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(20px) saturate(1.5);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   animation: fadeUp 0.9s ease-out both;
+  position: relative;
+  z-index: 2;
+}
+
+body.darkmode .container {
+  background: rgba(25, 25, 25, 0.4);
+  backdrop-filter: blur(20px) saturate(1.2);
 }
 
 /* === TYPOGRAPHY === */
 h1 {
-  font-size: clamp(2.8rem, 5vw, 4rem);
+  font-size: clamp(2rem, 4vw, 3rem);
   font-weight: 900;
   text-transform: uppercase;
-  line-height: 1;
-  letter-spacing: -3px;
+  line-height: 1.1;
+  letter-spacing: -2px;
   margin-bottom: 1rem;
   text-align: center;
 }
@@ -69,9 +92,15 @@ h2 {
   opacity: 0.8;
   margin-bottom: 2.5rem;
   text-align: center;
+  letter-spacing: -1px;
+  color: rgba(0,0,0,0.7);
 }
 
-/* === BUTTONS === */
+body.darkmode h2 {
+  color: rgba(255,255,255,0.8);
+}
+
+/* buttons */
 .btn {
   display: inline-block;
   padding: 0.8rem 2rem;
@@ -90,15 +119,16 @@ h2 {
 }
 
 .btn-danger {
-  background-color: #e74c3c;
+  background-color: #111756;
   color: #fff;
   border: none;
 }
 
 .btn-custom:hover,
 .btn-danger:hover {
-  transform: translateY(-3px) scale(1.03);
+  transform: translateY(-2px) scale(1.05);
   filter: brightness(1.1);
+  box-shadow: 0 0 10px rgba(255, 127, 80, 0.4);
 }
 
 /* === DARK MODE BUTTON COLORS === */
@@ -110,6 +140,7 @@ body.darkmode .btn-custom {
 body.darkmode .btn-custom:hover {
   background-color: var(--accent2-dark);
   color: #fff;
+  box-shadow: 0 0 10px rgba(182, 79, 255, 0.4);
 }
 
 /* === FILE INPUT === */
@@ -132,6 +163,7 @@ body.darkmode input[type="file"] {
   border-color: rgba(255, 255, 255, 0.2);
   background: rgba(0, 0, 0, 0.2);
 }
+
 body.darkmode input[type="file"]:hover {
   border-color: var(--accent-dark);
 }
@@ -144,14 +176,6 @@ body.darkmode input[type="file"]:hover {
   margin-top: 2.5rem;
 }
 
-/* === FOOTER === */
-footer {
-  text-align: center;
-  margin-top: 3rem;
-  font-size: 0.9rem;
-  opacity: 0.8;
-  letter-spacing: 0.5px;
-}
 
 /* === ANIMATIONS === */
 @keyframes fadeUp {
@@ -163,6 +187,7 @@ footer {
 section {
   margin-bottom: 6rem;
 }
+
 .block {
   background: linear-gradient(120deg, var(--accent-light), var(--accent2-light));
   color: #fff;
@@ -174,4 +199,66 @@ section {
 
 body.darkmode .block {
   background: linear-gradient(120deg, var(--accent-dark), var(--accent2-dark));
+}
+
+/* === TEXT INPUT (LOGIN FORM) === */
+input[type="text"] {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.9rem 1rem;
+  margin: 1rem 0;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--accent-light);
+  background: rgba(255, 255, 255, 0.7);
+  transform: scale(1.02);
+}
+
+body.darkmode input[type="text"] {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-dark);
+}
+
+body.darkmode input[type="text"]:focus {
+  border-color: var(--accent-dark);
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* === SUBMIT BUTTON === */
+input[type="submit"] {
+  background-color: var(--accent-light);
+  color: #fff;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  transform: translateY(-2px) scale(1.05);
+  filter: brightness(1.1);
+  box-shadow: 0 0 10px rgba(255, 127, 80, 0.4);
+}
+
+body.darkmode input[type="submit"] {
+  background-color: var(--accent-dark);
+  color: var(--text-dark);
+}
+
+body.darkmode input[type="submit"]:hover {
+  background-color: var(--accent2-dark);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(182, 79, 255, 0.4);
 }
