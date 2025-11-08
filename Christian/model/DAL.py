@@ -63,3 +63,7 @@ def add_new_user(username: str) -> None:
 def get_users_as_list() -> list:
     db = get_db_as_dict()
     return list(db)
+
+def get_file_paths(username:str) -> list[str]:
+    filesnames:list[str] = os.listdir(UPLOAD_FOLDER + "/" + username)
+    return [UPLOAD_FOLDER + "/" + x for x in filesnames]
