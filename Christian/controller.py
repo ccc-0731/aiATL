@@ -24,6 +24,25 @@ app.secret_key = "hi"
 def index():  # put application's code here
     return render_template("index.html")
 
-if __name__ == '__main__':
-    app.debug = True
-    app.run(host="0.0.0.0")
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route("/upload", methods=['GET', 'POST'])
+def uploadFile():
+    FORMNAME = 'file'
+    if request.method == 'POST':
+        if FORMNAME not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('download_file', name=filename))
+    return
