@@ -12,7 +12,7 @@
         <h1>Welcome back, username!</h1>
         <h2>What's going wrong? We can help.</h2>
 
-        <form action="/solution" method="POST" enctype="multipart/form-data" class="mt-4">
+        <form action="/solution" method="POST" enctype="multipart/form-data" class="mt-4" onsubmit="showBear()">
             <div class="mb-3">
                 <label for="image_input" class="form-label">Upload Image(s):</label>
                 <input id="image_input" type="file" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
@@ -125,6 +125,11 @@
     fetchQuestions();
     setInterval(fetchQuestions, 5000); // poll every 5s
 
+    function showBear() {
+        document.querySelector(".container").style.display = "none";
+        document.getElementById("bearLoading").style.display = "flex";  // show the bear
+            return true; // allow the form to continue submitting normally
+}
 
     </script>
     <div id="bearLoading" style="
