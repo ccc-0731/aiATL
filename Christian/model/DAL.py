@@ -1,14 +1,17 @@
 import os;
 import json;
 
-UPLOAD_FOLDER = '~/database/images'
+UPLOAD_FOLDER = 'database\images'
 def saveFile(file, username:str) -> None:
     file.save(os.path.join(UPLOAD_FOLDER, username))
 
 def eraseUserData(username:str):
     if os.path.exists(os.path.join(UPLOAD_FOLDER, username)):
         os.remove(os.path.join(UPLOAD_FOLDER, username))
+    os.mkdir(os.path.join(UPLOAD_FOLDER, username))
 
+def getFiles(username:str):
+    return 
 def set_sb() -> None:
     """
     sets up the database
@@ -19,7 +22,7 @@ def set_sb() -> None:
         }
     }
 
-    f = open("database/task_list_DB.json", "w")
+    f = open("database/userdata.json", "w")
     json.dump(init_db, f)
     f.close()
 
@@ -53,6 +56,8 @@ def get_users_as_list() -> list:
 def add_new_user(username: str) -> None:
     db = get_db_as_dict()
     db[username] = {}
+    os.chmod(os.path.join(UPLOAD_FOLDER, username),110)
+    os.mkdir(os.path.join(UPLOAD_FOLDER, username))
     write_to_db(db)
 
 def get_users_as_list() -> list:

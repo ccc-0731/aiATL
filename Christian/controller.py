@@ -71,13 +71,13 @@ def uploadFile():
     if request.method == 'POST':
         if FORMNAME not in request.files:
             flash('No file part')
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
         file = request.files[FORMNAME]
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
             flash('No selected file')
-            return redirect(url_for('/'))
+            return redirect(url_for('index'))
         #
         if file and allowed_file(file.filename):
             #makes the filename safe so no malware
@@ -89,7 +89,7 @@ def uploadFile():
             questionsRaw: str = gemini.call_read(file)
             
             questionsList: list[str] = questionsRaw.split
-            print()
+            print(questionsList)
             return render_template("questions.html", questionsList)
             
     return redirect(url_for('/'))
