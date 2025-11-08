@@ -6,7 +6,15 @@ load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
-def gemini_call_readImg(prompt, filepath=None):
+def call_read(prompt, filepath=None):
+
+    system_prompt = "The user is experiencing problems, as shown in the images. Analyze the problems that you find in these images (taken from different angles, or show different aspects of the problem). Ask the user to provide more context about problems you find."
+
+    if prompt != None:
+        prompt = system_prompt + " Here is a user description of what's going wrong: " + prompt
+    else: 
+        prompt = system_prompt
+    
     if filepath:
         myfile = client.files.upload(file=filepath)
         contents = [prompt, myfile]
@@ -18,5 +26,5 @@ def gemini_call_readImg(prompt, filepath=None):
     )
     return response.text
 
-if __name__ == "__main__":
-    print(gemini_call_readImg("test.png", "What problems can you find in this image? Ask the user about problems you find."))
+#if __name__ == "__main__":
+ #   print(call_read("test.png", "The user is experiencing problems, as shown in the images. Analyze the problems that you find in these images (taken from different angles, or show different aspects of the problem). Ask the user to provide more context about problems you find."))
