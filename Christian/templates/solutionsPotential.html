@@ -80,6 +80,9 @@
             <a href="/" class="btn btn-secondary">Back to Start</a>
             <button onclick="refreshSolutions()" class="btn btn-primary">Refresh Solutions</button>
         </div>
+        {% for answer in answers%}
+            <p>{answer}</p>
+        {%endfor%}
     </div>
 
     <script>
