@@ -18,10 +18,12 @@
                 <label for="image_input" class="form-label">Upload Image(s):</label>
                 <input id="image_input" type="file" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
             </div>
-            <!-- {% for question in testQuestions %}
-            {{questions}}
+            {% for question in testQuestions %}
 
-            {%endfor%} -->
+            <label for="questions" class="form-label">{{question}}</label>
+              <input id="questions" type="text" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
+
+            {%endfor%}
             <div class="d-flex justify-content-between mt-4">
                 <a href="/logout" class="btn btn-danger w-25">Logout</a>
                 <a href="questions.html" class="btn btn-custom w-25">Proceed</a>
