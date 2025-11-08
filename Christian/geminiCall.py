@@ -42,6 +42,7 @@ def call_read(stage, prompt=None, filepaths=None):
             The first section of your response must be given in a step-by-step list to help potentially solve the problem.
             Do not use semicolins in the section, or you will fail the task.
             At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
+            DO NOT INSERT ANY NEW LINE BREAKS after this semicolon.
             Next, search the internet for relevant tutorial videos, guides or websites. 
             Make sure that the links are up to date and exist, and there are multiple links for each step.
             Delimit each link with only a semicolon in between. NO NEW LINE BREAKS 
@@ -82,7 +83,8 @@ def call_read(stage, prompt=None, filepaths=None):
     text = text.split(";")
     return text
 
-
+#testing code
+'''
 if __name__ == "__main__":
     # First multimodal call
     result1 = call_read(
@@ -101,3 +103,4 @@ if __name__ == "__main__":
         filepaths=["test2.JPG"]
     )
     print("SECOND:", result2)
+'''
