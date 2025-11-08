@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Upload</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../static/style.css">
-    
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Upload</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../static/style.css" />
 </head>
+
 <body class="lightmode">
-    <div class="container">
-        <h1>Welcome back, username!</h1>
-        <h2>What's going wrong? We can help.</h2>
+  <div class="container" id="upload">
+    <h1>Welcome back, username!</h1>
+    <h2>What's going wrong? We can help.</h2>
 
-        <form action="/upload_image" method="POST" enctype="multipart/form-data" class="mt-4">
-            <div class="mb-3">
-                <label for="image_input" class="form-label">Upload Image(s):</label>
-                <input id="image_input" type="file" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
-                <label for="image_submit" class="form-label">Upload Image(s):</label>
-                <input id="image_submit" type="submit">
-            </div>
+    <form action="/upload_image" method="POST" enctype="multipart/form-data" class="mt-4">
+      <div class="mb-3">
+        <label for="image_input" class="form-label">Upload Image(s):</label>
+        <input
+          id="image_input"
+          type="file"
+          name="image_input"
+          class="form-control"
+          accept="image/*"
+          capture="camera"
+          multiple
+        />
+      </div>
 
-            <div class="d-flex justify-content-between mt-4">
-                <a href="/logout" class="btn btn-danger w-25">Logout</a>
-                <a href="/upload" class="btn btn-custom w-25">Proceed</a>
-            </div>
-        </form>
-    </div>
+      <div class="button-row mt-4">
+        <a href="/logout" class="btn btn-danger">Logout</a>
+        <input type="submit" value="Submit" class="btn btn-custom" />
+      </div>
+    </form>
+  </div>
 
- 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{{ url_for('static', filename='theme_toggle.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
