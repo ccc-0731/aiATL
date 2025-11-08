@@ -7,7 +7,7 @@ import geminiCall as gemini
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 DELIMITER: str = ";"
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='templates')
 
 app.secret_key = "hi"
 
