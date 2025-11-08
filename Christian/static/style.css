@@ -1,0 +1,62 @@
+/* light mode */
+body {
+            background: linear-gradient(to bottom, #87ceeb, #ffffff) no-repeat center center fixed; /* Sky blue to white gradient */
+            background-size: cover;
+            color: #333;
+            font-family: 'Arial', sans-serif;
+        }
+        .container {
+            margin-top: 5%;
+            background: rgba(255, 250, 210, 0.9); /* Soft pastel yellow, resembling sunny vibes */
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        h1, h2 {
+            font-family: 'Helvetica', sans-serif;
+            font-weight: bold;
+            text-align: center;
+        }
+        h1 {
+            color: #fbb034; /* Golden retriever fur-inspired orange */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        h2 {
+            color: #228b22; /* Deep green to evoke nature */
+        }
+        .task-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .task-list li {
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 5px solid #fbb034;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-custom {
+            background-color: #fbb034;
+            border: none;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #ffa72b;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #228b22;
+            border: none;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #333;
+        }
