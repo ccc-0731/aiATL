@@ -25,9 +25,9 @@ html, body {
   --accent2-light: #2b50aa; 
 
   /* Dark mode */
-  --bg-dark: #050505;
+  --bg-dark: #171e35;
   --text-dark: #f5f5f5;
-  --accent-dark: #ffb84c; /* warm yellow */
+  --accent-dark: #a1b7f0; /* warm yellow */
   --accent2-dark: #b64fff; /* magenta purple */
 }
 
@@ -38,7 +38,7 @@ body.lightmode {
 }
 
 body.darkmode {
-  background: linear-gradient(135deg, var(--bg-dark), #1a1a1c);
+  background: linear-gradient(135deg, var(--bg-dark), #090c18);
   color: var(--text-dark);
 }
 
@@ -142,7 +142,7 @@ body.darkmode .btn-custom {
 body.darkmode .btn-custom:hover {
   background-color: var(--accent2-dark);
   color: #fff;
-  box-shadow: 0 0 10px rgba(182, 79, 255, 0.4);
+  box-shadow: 0 0 10px rgba(93, 102, 180, 0.4);
 }
 
 /* file input */
@@ -260,6 +260,6 @@ body.darkmode input[type="submit"] {
 
 body.darkmode input[type="submit"]:hover {
   background-color: var(--accent2-dark);
-  color: #fff;
+  color: #000000;
   box-shadow: 0 0 10px rgba(182, 79, 255, 0.4);
 }
