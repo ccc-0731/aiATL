@@ -95,7 +95,7 @@ def uploadFile():
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
-        return render_template("questions.html")
+        return render_template("questions.html",testQuestions=questionsList)
             
     return redirect(url_for('/'))
         
