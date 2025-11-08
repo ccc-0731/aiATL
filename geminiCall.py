@@ -55,7 +55,10 @@ def call_read(stage, prompt=None, filepaths=None):
             At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
             DO NOT INSERT ANY NEW LINE BREAKS after this semicolon.
             Next, search the internet for relevant tutorial videos, guides or websites. 
+            Only use valid link URLs retrieved from the Google Search tool.
+            Provide the full, exact URL for all citations and ensure they are active links.
             Return the valid links URLs, make sure they are up to date and exist.
+            Do not create or fabricate URLs. If you cannot find a source, state that no source was found.
             Delimit each URL with only a semicolon in between. NO NEW LINE BREAKS 
             Do not include any additional explanations or commentary after the links,
             or you will fail the task.
