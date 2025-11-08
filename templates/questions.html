@@ -95,7 +95,7 @@
         }
 
         async function onSubmit(ev){
-            document.getElementById("BearLoading").style.display = "flex";
+            document.getElementById("bearLoading").style.display = "flex";
             const qid = ev.currentTarget.dataset.qid;
             const textarea = container.querySelector(`textarea[data-qid="${qid}"]`);
             const answer = textarea.value.trim();
