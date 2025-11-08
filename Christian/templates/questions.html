@@ -18,7 +18,10 @@
                 <label for="image_input" class="form-label">Upload Image(s):</label>
                 <input id="image_input" type="file" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
             </div>
+            <!-- {% for question in testQuestions %}
+            {{questions}}
 
+            {%endfor%} -->
             <div class="d-flex justify-content-between mt-4">
                 <a href="/logout" class="btn btn-danger w-25">Logout</a>
                 <a href="questions.html" class="btn btn-custom w-25">Proceed</a>
@@ -52,6 +55,7 @@
   <div id="questions"><</div>
 
   <script>
+    
     const QUESTIONS_URL = '/questions';    // GET -> [{id,text,...}]
     const ANSWER_URL = '/answers';         // POST -> { question_id, answer }
 
