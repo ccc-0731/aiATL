@@ -27,7 +27,8 @@ def call_read(stage, prompt=None, filepaths=None):
         )
     elif stage == 2:
         system_prompt = (
-            "You are continuing this same conversation between the AI helper and the user: {history}"
+            "You are continuing this same conversation between the AI helper and the user."
+            "The conversation history is appended to the end of this prompt."
             "You now have access to all prior turns in this chat, including: "
             "- The user's earlier images showing the problem\n"
             "- Your own previously asked questions\n"
@@ -49,31 +50,28 @@ def call_read(stage, prompt=None, filepaths=None):
     else:
         full_prompt = system_prompt
 
-    # Build the conversation contents
-    contents = [{"role": "system", "parts": [full_prompt]}]
-    contents.extend(history)  # include previous turns
-
-    # --- Prepare message parts (text + optional images) ---
-    message_parts = [full_prompt]
+    # --- Handle image uploads ---
+    contents = [full_prompt]
     if filepaths:
+        # Ensure filepaths can be either a single string or a list
         if isinstance(filepaths, str):
             filepaths = [filepaths]
-        uploaded = [client.files.upload(file=p) for p in filepaths]
-        message_parts.extend(uploaded)
+        uploaded_files = [client.files.upload(file=path) for path in filepaths]
+        contents.extend(uploaded_files)
 
-    contents.append({"role": "user", "parts": message_parts})
+    contents = [full_prompt] + history # include previous turns
 
     # --- Send to chat (Gemini remembers previous context automatically) ---
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=contents
     )
-    text = response.txt
+    text = response.text
 
     if stage == 1:
-        # Save turn in memory
-        history.append({"role": "user", "parts": [contents]})
-        history.append({"role": "model", "parts": [text]})
+        # Save turn in memory as plain text
+        history.append(f"User: {prompt}")
+        history.append(f"AI: {text}")
         text = text.split(";")
     
     return text
@@ -83,14 +81,17 @@ if __name__ == "__main__":
     # First multimodal call
     result1 = call_read(
         stage=1,
-        prompt="Help, my bambulab A1 3d printer is failing prints!",
+        prompt="Bambulab A1 3d printer",
         filepaths=["test2.JPG"]
     )
     print("FIRST:", result1)
 
-    '''# Second text-only call (no images, continues same chat session)
+    name = input("Your answers: ")
+
+    # Second text-only call (no images, continues same chat session)
     result2 = call_read(
         stage=2,
-        prompt="Here's my clarification based on your earlier questions. "
+        prompt=name,
+        filepaths=["test2.JPG"]
     )
-    print("SECOND:", result2)'''
+    print("SECOND:", result2)
