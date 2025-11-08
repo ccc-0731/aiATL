@@ -5,6 +5,9 @@ UPLOAD_FOLDER = '~/database/images'
 def saveFile(file, username:str) -> None:
     file.save(os.path.join(UPLOAD_FOLDER, username))
 
+def eraseUserData(username:str):
+    if os.path.exists(os.path.join(UPLOAD_FOLDER, username)):
+        os.remove(os.path.join(UPLOAD_FOLDER, username))
 
 def set_sb() -> None:
     """

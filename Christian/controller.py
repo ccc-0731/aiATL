@@ -23,6 +23,7 @@ def index():  # put application's code here
         return render_template('login_form.html')
     #adds username to the session cookie which just acts as a dictionary
     username = session["username"]
+    DAL.eraseUserData(username)
     #renders index
     return render_template('index.html')
 
@@ -85,9 +86,38 @@ def uploadFile():
             
             return render_template(url_for("questions"), questionsList)
             
-    return
+    return redirect(url_for('/'))
 
-    
+@app.route("/question", methods=['GET','POST'])
+def getAnswers():
+    if "logged_in" not in session:
+        #redirects to login
+        return render_template('login_form.html')
+    FORMNAME = 'file'
+    if request.method == 'POST':
+        if FORMNAME not in request.files:
+            flash('No file part')
+            return redirect(url_for('questions'))
+        file = request.files[FORMNAME]
+        # If the user does not select a file, the browser submits an
+        # empty file without a filename.
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(url_for('/'))
+        #
+        if file and allowed_file(file.filename):
+            #makes the filename safe so no malware
+            filename = secure_filename(file.filename)
+            #saves the file to the images folder in database
+            DAL.saveFile(file, session["username"])
+            
+            #Gemini Stuff
+            DELIMITER: chr = ascii(32)
+            questionsRaw: str = gemini.call_read(file)
+            
+            questionsList: list[str] = DELIMITER.split(questionsRaw)
+            
+            return render_template(url_for("questions"), questionsList)
 
 
 # @app.route("/soulutions", methods=['GET','POST'])
