@@ -32,11 +32,6 @@
         </form>
     </div>
 
-    <!-- Bear Loading + AI Questions Section -->
-    <div id="loading" style="text-align: center; margin-top: 2rem;">
-        <h2 style="font-size: 40px;">Questions from the AI</h2>
-        <img src="BearLoading.gif" alt="Bear Loading Animation" width="400">
-    </div>
 
     <div id="questions"></div>
 
@@ -100,6 +95,7 @@
         }
 
         async function onSubmit(ev){
+            document.getElementById("bearLoading").style.display = "flex";
             const qid = ev.currentTarget.dataset.qid;
             const textarea = container.querySelector(`textarea[data-qid="${qid}"]`);
             const answer = textarea.value.trim();
@@ -125,18 +121,28 @@
             return s ? s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) : '';
         }
 
-    function markSeen(id){
-      // visually mark as read — in a real app you'd POST to the server
-      const q = container.querySelector(`.question[data-qid="${id}"]`);
-      if (q) q.style.opacity = '0.6';
-    }
-
     // Start polling
     fetchQuestions();
     setInterval(fetchQuestions, 5000); // poll every 5s
 
 
-        // renderQuestions(testQuestions);
     </script>
+    <div id="bearLoading" style="
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:white;
+  z-index:9999;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+">
+  <img src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation" style="width:300px;">
+  <h2 style="margin-top:20px; color:#333; font-family:system-ui, sans-serif;">
+    Processing your submission...
+  </h2>
+</div>
 </body>
 </html>
