@@ -39,9 +39,15 @@ def call_read(stage, prompt=None, filepaths=None):
             "Summarize your reasoning and give a clear diagnostic explanation."
             '''Based on that context:
             First, summarize and interpret the issue clearly after reasoning out exactly what the problem can possibly be, including your confidence. 
+            The first section of your response must be given in a step-by-step list to help potentially solve the problem.
+            Do not use semicolins in the section, or you will fail the task.
+            At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
             Next, search the internet for relevant tutorial videos, guides or websites. 
-            The last section of your response must be given in a step-by-step list to help potentially solve the problem, 
-            with the tutorial videos, guides or website links under each step.'''
+            Make sure that the links are up to date and exist, and there are multiple links for each step.
+            Delimit each link with a semicolon. 
+            Do not include any additional explanations or commentary after the links,
+            or you will fail the task.
+            '''
         )
 
     # --- Combine with user prompt if provided ---
@@ -72,8 +78,8 @@ def call_read(stage, prompt=None, filepaths=None):
         # Save turn in memory as plain text
         history.append(f"User: {prompt}")
         history.append(f"AI: {text}")
-        text = text.split(";")
     
+    text = text.split(";")
     return text
 
 
