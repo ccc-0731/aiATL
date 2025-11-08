@@ -5,10 +5,12 @@ from model import DAL
 from werkzeug.utils import secure_filename
 import geminiCall as gemini
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
+DELIMITER: str = ";"
 
 app = Flask(__name__)
 
 app.secret_key = "hi"
+
 
 #takes in a filename and checks if the extention is allowed
 def allowed_file(filename) -> list[str]:
@@ -112,12 +114,31 @@ def getAnswers():
             DAL.saveFile(file, session["username"])
             
             #Gemini Stuff
-            DELIMITER: chr = ascii(32)
+            
             questionsRaw: str = gemini.call_read(file)
             
-            questionsList: list[str] = DELIMITER.split(questionsRaw)
-            
+            questionsList: list[str] = questionsRaw.split(DELIMITER)
+            # renders questions and gives jinja a variable
             return render_template(url_for("questions"), questionsList)
+        
+@app.route("/solution", methods=['GET',"POST"])
+def getSolutions():
+    if "logged_in" not in session:
+        #redirects to login
+        return render_template('login_form.html')
+    username:str = session["username"]
+    answers:list[str] = []
+    for value in requests.values():
+        value.append(value)
+    #files = DAL.getFiles(username)
+
+    solutions:list[str] = gemini.call_read(answers.join("|")).split(DELIMITER)
+
+    return render_template(url_for("solutions"))
+
+
+
+
 
 
 # @app.route("/soulutions", methods=['GET','POST'])
