@@ -57,14 +57,11 @@ def call_read(stage, prompt=None, filepaths=None):
     else:
         full_prompt = system_prompt
 
-    # --- Handle image uploads ---
-    contents = [full_prompt]
-    if filepaths:
-        # Ensure filepaths can be either a single string or a list
-        if isinstance(filepaths, str):
-            filepaths = [filepaths]
-        uploaded_files = [client.files.upload(file=path) for path in filepaths]
-        contents.extend(uploaded_files)
+    # --- Handle (multiple) image uploads ---
+
+    # Upload multiple files
+    uploaded_files = [client.files.upload(file=path) for path in filepaths]
+    contents.append(uploaded_files)
 
     contents = [full_prompt] + history # include previous turns
 
