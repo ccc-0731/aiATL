@@ -41,7 +41,7 @@ def write_to_db(data: dict) -> None:
     :param data: dictionary to write
     :return: None
     """
-    f = open("database/task_list_DB.json", "w")
+    f = open("database/userdata.json", "w")
     json.dump(data, f)
     f.close()
 

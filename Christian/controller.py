@@ -25,12 +25,17 @@ def index():  # put application's code here
         return render_template('login_form.html')
     #adds username to the session cookie which just acts as a dictionary
     username = session["username"]
-    DAL.eraseUserData(username)
     #renders index
     return render_template('index.html')
 
 #renders a login form to get a username
 @app.route('/login_form', methods=['POST'])
+def loginForm():
+    if "logged_in" not in session:
+        return render_template('login_form.html')
+    return render_template(url_for("index"))
+
+@app.route('/login', methods=['POST'])
 def login():
     #if your logged in redirect to index
     if "logged_in" in session:
@@ -38,7 +43,7 @@ def login():
     #stores username in the json file if it's not there and in the session cookie
     username = request.form.get('username')
     session['username'] = username
-    if (username not in DAL.get_users_as_list):
+    if (username not in DAL.get_users_as_list()):
         DAL.add_new_user(username)
     #adds a cookie to say you're logged in
     session["logged_in"] = True
@@ -133,7 +138,8 @@ def getSolutions():
     #files = DAL.getFiles(username)
 
     solutions:list[str] = gemini.call_read(answers.join("|")).split(DELIMITER)
-
+    username = session["username"]
+    DAL.eraseUserData(username)
     return render_template(url_for("solutions"))
 
 
