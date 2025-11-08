@@ -13,7 +13,6 @@ def set_sb() -> None:
     """
     init_db = {
         "jane1": {
-            "tasks": ["task1", "task2", "task3"],
         }
     }
 

@@ -5,7 +5,7 @@ from model import DAL
 from werkzeug.utils import secure_filename
 
 
-ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 
