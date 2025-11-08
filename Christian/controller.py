@@ -72,7 +72,8 @@ def uploadFile():
         if FORMNAME not in request.files:
             flash('No file part')
             return redirect(url_for('index'))
-        file = request.files[FORMNAME]
+        file = request.files.getlist(FORMNAME)
+        print(len(request.files))
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if file.filename == '':
@@ -80,6 +81,7 @@ def uploadFile():
             return redirect(url_for('index'))
 
         if file and allowed_file(file.filename):
+            print(file)
             #makes the filename safe so no malware
             filename = secure_filename(file.filename)
             #saves the file to the images folder in database
@@ -103,7 +105,7 @@ def getSolutions():
         value.append(value)
     #files = DAL.getFiles(username)
 
-    solutions:list[str] = gemini.call_read(answers.join("|")).split(DELIMITER)
+    solutions:list[str] = gemini.call_read(2,answers.join("|"),)
     username = session["username"]
     DAL.eraseUserData(username)
     return render_template(url_for("solutions"))
