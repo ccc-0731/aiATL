@@ -110,12 +110,11 @@ def getSolutions():
     answers:list[str] = []
     for value in request.values:
         answers.append(value)
-    #files = DAL.getFiles(username)
     filePaths:list[str] = DAL.get_file_paths(username)
-    solutions:list[str] = gemini.call_read(2,"|".join(answers),)
+    solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
     
-    DAL.eraseUserData(username)
-    return render_template(url_for("solutions"),answers=["kjgf"])
+    # DAL.eraseUserData(username)
+    return render_template("solutions.html",answers=solutions)
 
 
 
