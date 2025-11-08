@@ -3,7 +3,7 @@ import requests;
 from werkzeug.utils import secure_filename
 from model import DAL
 from werkzeug.utils import secure_filename
-
+import geminiCall as gemini
 
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.secret_key = "hi"
 
 #takes in a filename and checks if the extention is allowed
-def allowed_file(filename):
+def allowed_file(filename) -> list[str]:
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -53,7 +53,7 @@ def logout():
     return redirect(url_for('index'))
 
 #uploads the file to 
-@app.route("/upload", methods=['GET', 'POST'])
+@app.route("/upload_image", methods=['GET', 'POST'])
 def uploadFile():
     FORMNAME = 'file'
     if request.method == 'POST':
@@ -72,8 +72,23 @@ def uploadFile():
             filename = secure_filename(file.filename)
             #saves the file to the images folder in database
             DAL.saveFile(file, session["username"])
-            return redirect(url_for('download_file', name=filename))
+            
+            #Gemini Stuff
+            questionsRaw: str = gemini.call_read(file)
+            presentQuestions()
+            return redirect(url_for('questions'))
+            
     return
+
+
+@app.route("/questions", methods=['GET','POST'])
+def presentQuestions():
+    
+
+
+@app.route("/soulutions", methods=['GET','POST'])
+def presentSolutions():
+
 
 if __name__ == "__main__":
     app.run(debug=True)
