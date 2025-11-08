@@ -86,7 +86,7 @@ def uploadFile():
             DAL.saveFile(file, session["username"])
             
             #Gemini Stuff
-            questionsRaw: str = gemini.call_read(file)
+            questionsRaw: str = gemini.call_read(stage=1, filepaths=file)
             
             questionsList: list[str] = questionsRaw.split
             print(questionsList)
