@@ -27,7 +27,9 @@ def index():  # put application's code here
     username = session["username"]
     #renders index
     return render_template('index.html')
-
+@app.route('/test_questions')
+def test_questions():
+    return render_template('questions.html', testQuestions=["test1", "test2"])
 #renders a login form to get a username
 @app.route('/login_form', methods=['POST'])
 def loginForm():
@@ -95,7 +97,7 @@ def uploadFile():
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
-        return render_template("questions.html",testQuestions=questionsList)
+        return render_template('questions.html',testQuestions=questionsList)
             
     return redirect(url_for('/'))
         
