@@ -6,7 +6,6 @@
     <title>Image Upload</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../static/style.css">
-
 </head>
 <body class="lightmode">
     <div class="container">
@@ -18,138 +17,123 @@
                 <label for="image_input" class="form-label">Upload Image(s):</label>
                 <input id="image_input" type="file" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
             </div>
-            {% for question in testQuestions %}
 
+            {% for question in testQuestions %}
             <label for="questions" class="form-label">{{question}}</label>
             <input id="questions" type="text" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
+            {% endfor %}
 
-            {%endfor%}
-            <input type="submit" value="submit">
+            <!-- Buttons aligned at bottom -->
             <div class="d-flex justify-content-between mt-4">
-                <a href="/logout" class="btn btn-danger w-25">Logout</a>
-                <a href="questions.html" class="btn btn-custom w-25">Proceed</a>
+                <a href="/logout" class="btn btn-danger">Logout</a>
+                <input type="submit" value="Submit">
+              
             </div>
         </form>
     </div>
 
+    <!-- Bear Loading + AI Questions Section -->
+    <div id="loading" style="text-align: center; margin-top: 2rem;">
+        <h2 style="font-size: 40px;">Questions from the AI</h2>
+        <img src="BearLoading.gif" alt="Bear Loading Animation" width="400">
+    </div>
 
+    <div id="questions"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-</body
 
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Further Clarification</title>
-  <style>
-    body{font-family:system-ui,Arial;padding:18px}
-    .question{border:1px solid #eee;padding:12px;border-radius:8px;margin:10px 0}
-    .meta{color:#666;font-size:.85rem}
-    textarea{width:100%;min-height:70px;margin-top:8px}
-    .btn{padding:8px 12px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
-    .btn.primary{background:#0b84ff;color:#fff;border:0}
-  </style>
-</head>
-<body>
-<div id = "loading" style="text-align: center;">
-    <h2 style="font-size: 40px;">Questions from the AI</h2>
-    <img src="BearLoading.gif" alt = "Bear Loading Animation" width="400">
-  </div>
+    <script>
+        const QUESTIONS_URL = '/questions';    // GET -> [{id,text,...}]
+        const ANSWER_URL = '/answers';         // POST -> { question_id, answer }
 
-  <div id="questions"><</div>
+        const container = document.getElementById('questions');
+        let seenIds = new Set();
 
-  <script>
-
-    const QUESTIONS_URL = '/questions';    // GET -> [{id,text,...}]
-    const ANSWER_URL = '/answers';         // POST -> { question_id, answer }
-
-    const container = document.getElementById('questions');
-    let seenIds = new Set();
-
-    function renderQuestions(list){
-      if (!list || list.length === 0) { //just in case
-        container.innerHTML = '<p>No questions right now.</p>';
-        return;
-      }
-      // Render newest first
-      container.innerHTML = '';
-      document.getElementById('loading').style.display = 'none';
-      list.forEach(q => {
-        const div = document.createElement('div');
-        div.className = 'question';
-        div.dataset.qid = q.id;
-        div.innerHTML = `
-          <div class="meta">#${q.id} • ${q.asked_by || 'AI'} • ${new Date(q.created_at).toLocaleString()}</div>
-          <div class="text" style="margin-top:6px">${escapeHtml(q.text)}</div>
-          <div style="margin-top:8px">
-            <textarea placeholder="Type your answer..." data-qid="${q.id}"></textarea>
-            <div style="margin-top:8px;display:flex;gap:8px">
-              <button class="btn submit" data-qid="${q.id}">Submit answer</button>
-            </div>
-            <div class="status" style="margin-top:8px;color:#0a0"></div>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-      // Hook up submit listeners
-      Array.from(container.querySelectorAll('.submit')).forEach(button => {
-        button.addEventListener('click', onSubmit);
-      });
-    }
-
-    async function fetchQuestions(){
-      try {
-        const res = await fetch(QUESTIONS_URL, {cache: 'no-store'});
-        if (!res.ok) throw new Error('Server response '+res.status);
-        const list = await res.json();
-        // Simple dedupe: only re-render if new id appears
-        const ids = new Set(list.map(q => q.id));
-        const isNew = Array.from(ids).some(id => !seenIds.has(id));
-        if (isNew) {
-          list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-          renderQuestions(list);
-          seenIds = ids;
+        function renderQuestions(list){
+            if (!list || list.length === 0) { //just in case
+                container.innerHTML = '<p>No questions right now.</p>';
+                return;
+            }
+            // Render newest first
+            container.innerHTML = '';
+            document.getElementById('loading').style.display = 'none';
+            list.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'question';
+                div.dataset.qid = q.id;
+                div.innerHTML = `
+                    <div class="meta">#${q.id} • ${q.asked_by || 'AI'} • ${new Date(q.created_at).toLocaleString()}</div>
+                    <div class="text" style="margin-top:6px">${escapeHtml(q.text)}</div>
+                    <div style="margin-top:8px">
+                        <textarea placeholder="Type your answer..." data-qid="${q.id}"></textarea>
+                        <div style="margin-top:8px;display:flex;gap:8px">
+                            <button class="btn btn-custom submit" data-qid="${q.id}">Submit answer</button>
+                        </div>
+                        <div class="status" style="margin-top:8px;color:#0a0"></div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            // Hook up submit listeners
+            Array.from(container.querySelectorAll('.submit')).forEach(button => {
+                button.addEventListener('click', onSubmit);
+            });
         }
-      } catch (err) {
-        console.error('fetchQuestions error', err);
-        // Optionally show error state in UI
-      }
-    }
 
-    async function onSubmit(ev){
-      const qid = ev.currentTarget.dataset.qid;
-      const textarea = container.querySelector(`textarea[data-qid="${qid}"]`);
-      const answer = textarea.value.trim();
-      if (!answer) { alert('Please type an answer'); return; }
-      const payload = { question_id: qid, answer };
-      try {
-        const res = await fetch(ANSWER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(await res.text());
-        const body = await res.json();
-        const statusEl = container.querySelector(`.question[data-qid="${qid}"] .status`);
-        statusEl.textContent = 'Answer saved';
-        textarea.value = '';
-      } catch (err) {
-        alert('Failed to submit answer: ' + err.message);
-      }
-    }
+        async function fetchQuestions(){
+            try {
+                const res = await fetch(QUESTIONS_URL, {cache: 'no-store'});
+                if (!res.ok) throw new Error('Server response '+res.status);
+                const list = await res.json();
+                // Simple dedupe: only re-render if new id appears
+                const ids = new Set(list.map(q => q.id));
+                const isNew = Array.from(ids).some(id => !seenIds.has(id));
+                if (isNew) {
+                    list.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+                    renderQuestions(list);
+                    seenIds = ids;
+                }
+            } catch (err) {
+                console.error('fetchQuestions error', err);
+                // Optionally show error state in UI
+            }
+        }
 
-    function escapeHtml(s){
-      return s ? s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) : '';
-    }
+        async function onSubmit(ev){
+            const qid = ev.currentTarget.dataset.qid;
+            const textarea = container.querySelector(`textarea[data-qid="${qid}"]`);
+            const answer = textarea.value.trim();
+            if (!answer) { alert('Please type an answer'); return; }
+            const payload = { question_id: qid, answer };
+            try {
+                const res = await fetch(ANSWER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                if (!res.ok) throw new Error(await res.text());
+                const body = await res.json();
+                const statusEl = container.querySelector(`.question[data-qid="${qid}"] .status`);
+                statusEl.textContent = 'Answer saved';
+                textarea.value = '';
+            } catch (err) {
+                alert('Failed to submit answer: ' + err.message);
+            }
+        }
 
-    function markSeen(id){
-      // visually mark as read — in a real app you'd POST to the server
-      const q = container.querySelector(`.question[data-qid="${id}"]`);
-      if (q) q.style.opacity = '0.6';
-    }
-    //TEST CASE
-    // Start polling
-    fetchQuestions();
-    setInterval(fetchQuestions, 5000); // poll every 5s
+        function escapeHtml(s){
+            return s ? s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) : '';
+        }
+
+        function markSeen(id){
+            // visually mark as read — in a real app you'd POST to the server
+            const q = container.querySelector(`.question[data-qid="${id}"]`);
+            if (q) q.style.opacity = '0.6';
+        }
+
+        // Start polling
+        fetchQuestions();
+        setInterval(fetchQuestions, 5000); // poll every 5s
 
 /*
     const testQuestions = [
@@ -158,8 +142,6 @@
             text: "Have you tried taking it to the shop instead of asking an AI bot, you idiot.",
             asked_by: "AI",
             created_at: new Date().toISOString()
-
-
         },
         {
             id: 2,
@@ -178,8 +160,6 @@
             text: "Have you tried taking it to the shop instead of asking an AI bot, you idiot.",
             asked_by: "AI",
             created_at: new Date().toISOString()
-
-
         },
         {
             id: 5,
@@ -196,11 +176,7 @@
     ];
 */
 
-    renderQuestions(testQuestions);
-
-
-  </script>
-
-
-
+        // renderQuestions(testQuestions);
+    </script>
+</body>
 </html>
