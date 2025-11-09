@@ -1,4 +1,4 @@
-
+'''
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 import requests;
 from werkzeug.utils import secure_filename
@@ -105,7 +105,7 @@ def uploadFile():
 
     return redirect("/")
 
-'''@app.route("/solution", methods=['GET',"POST"])
+@app.route("/solution", methods=['GET',"POST"])
 def getSolutions():
     if "logged_in" not in session:
         #redirects to login
@@ -118,7 +118,7 @@ def getSolutions():
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
 
     DAL.eraseUserData(username)
-    return render_template("solutions.html",answers=solutions,images=filePaths)'''
+    return render_template("solutions.html",answers=solutions,images=filePaths)
 
 @app.route("/solution", methods=["POST"])
 def solution():
@@ -148,33 +148,7 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = "test_secret_key"
 
 # ====== TEMPORARY TEST SOLUTION ROUTE ======
-@app.route('/solution')
-def test_solution():
-    """Test endpoint returning fake AI solutions + YouTube videos."""
-    return jsonify({
-        "solutions": [
-            {
-                "title": "Fixing a cracked phone screen",
-                "description": "You can use a DIY repair kit or replace the glass entirely.",
-                "url": "https://www.youtube.com/watch?v=8xTzEJUM6aI"
-            },
-            {
-                "title": "Laptop not turning on",
-                "description": "Try a hard reset and check the power supply connection.",
-                "url": "https://youtu.be/VY5X9ebFq5E"
-            },
-            {
-                "title": "Water-damaged keyboard",
-                "description": "Turn off the device immediately and dry components before reassembly.",
-                "url": "https://www.youtube.com/shorts/df8sNqzvFfU"
-            },
-            {
-                "title": "Unresponsive touchpad",
-                "description": "Update drivers and disable external mouse override in system settings.",
-                "url": ""  # intentionally left blank (no video)
-            }
-        ]
-    })
+
 
 @app.route('/')
 def index():
@@ -185,4 +159,4 @@ def index():
 if __name__ == '__main__':
     app.run(debug=True)
 
-    '''
+
