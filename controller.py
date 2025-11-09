@@ -118,7 +118,7 @@ def getSolutions():
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
 
     DAL.eraseUserData(username)
-    return render_template("solutions.html",answers=solutions,images=filePaths, uploaded_images=yt.promptToVideos("bike"))
+    return render_template("solutionsIframePotential.html",answers=solutions,images=filePaths, uploaded_images=yt.promptToVideos("bike"))
 
 # @app.route("/solution", methods=["POST"])
 # def solution():

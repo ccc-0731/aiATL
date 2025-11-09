@@ -101,104 +101,24 @@ body.darkmode .solution-entry {
 <body class="darkmode">
     <div class="container">
         <h1 class="text-center">Repair Solutions</h1>
-
+        <br>
+        <p>{{answer}}</p>
         <!-- uploaded images on top -->
         {% if uploaded_images %}
         <div class="uploaded-images">
             {% for img in uploaded_images %}
-                <img src="{{ img }}" alt="Uploaded image">
+                <iframe src="{{ img }}" alt="Uploaded image">
             {% endfor %}
         </div>
         {% endif %}
-
-        <!-- solutions container -->
-        <div id="solutions" class="mt-4">
-            <div class="loading text-center">Loading solutions...</div>
-        </div>
 
         <!-- navigation buttons -->
         <div class="button-row">
             <a href="/" class="btn btn-danger">Back to Start</a>
         </div>
 
-        {% for answer in answers %}
-            <p>{{answer}}</p>
-        {% endfor %}
     </div>
-
-    <script>
-        const SOLUTIONS_URL = '/solution';  // GET endpoint for fetching solutions
-
-        async function fetchSolutions() {
-            const container = document.getElementById('solutions');
-
-            try {
-                const res = await fetch(SOLUTIONS_URL, {cache: 'no-store'});
-                if (!res.ok) throw new Error('Server response ' + res.status);
-                const data = await res.json();
-
-                if (!data || (!data.solutions && !data.error)) {
-                    container.innerHTML = '<div class="loading text-center mt-3">No solutions available yet. Please check back after answering all questions.</div>';
-                    return;
-                }
-
-                if (data.error) {
-                    container.innerHTML = `<div class="error alert alert-danger mt-3">${escapeHtml(data.error)}</div>`;
-                    return;
-                }
-
-                // Render each solution with answer + optional video preview
-container.innerHTML = `
-  <ol class="solution-list">
-    ${data.solutions.map(solution => {
-      // Extract YouTube video ID if URL exists
-      let videoId = '';
-      if (solution.url && solution.url.includes('youtube')) {
-        const match = solution.url.match(/(?:v=|be\/|shorts\/)([A-Za-z0-9_-]{11})/);
-        if (match) videoId = match[1];
-      }
-
-      return `
-        <li class="solution-item">
-          <div class="solution-entry">
-            <div class="solution-text">
-              ${escapeHtml(solution.description || solution.title || '')}
-            </div>
-            <div class="divider"></div>
-            ${videoId
-              ? `<div class="solution-video"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`
-              : `<div class="solution-video text-muted">(No video provided)</div>`
-            }
-          </div>
-        </li>`;
-    }).join('')}
-  </ol>
-`;
-
-
-            } catch (err) {
-                console.error('fetchSolutions error', err);
-                container.innerHTML = `
-                    <div class="error alert alert-danger mt-3">
-                        Failed to load solutions: ${escapeHtml(err.message)}
-                    </div>
-                `;
-            }
-        }
-
-        function escapeHtml(s) {
-            return s ? s.replace(/[&<>"]/g, c => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;'
-            }[c])) : '';
-        }
-
-        window.addEventListener('DOMContentLoaded', fetchSolutions);
-
-
-    </script>
+    
 <script src="../static/theme_toggle.js"></script>
 </body>
 </html>
