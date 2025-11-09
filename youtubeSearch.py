@@ -46,7 +46,7 @@ def promptToVideos(prompt:str):
         correct_urls.append(x[0:-3])
     clean_urls = []
     for x in correct_urls:
-        clean_urls.append(x[0:24]+"embed/"+x[24:])
+        clean_urls.append(x[0:24]+"embed/"+x[32:])
     print(clean_urls)
     return clean_urls
 
