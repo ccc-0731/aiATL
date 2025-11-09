@@ -41,16 +41,17 @@ def promptToVideos(prompt:str):
     
     urls = extract_urls(str(assistant.chat_messages))
 
-    clean_urls = []
+    correct_urls = []
     for x in urls:
-        clean_urls.append(x[0:-3])
-    # urls = urls.remove("\\,")
-    return clean_urls
+        correct_urls.append(x[0:-3])
+    clean_urls = []
+    for x in correct_urls:
+        clean_urls.append(x[0:23]+"embed/"+x[23:])
+    print(clean_urls)
+    return correct_urls
 
-
-    #return dict(assistant.chat_messages)
 
 
 
 if __name__ == "__main__":
-    print(promptToVideos("f"))
+    print(promptToVideos("give me videos about fishing in the mississippi"))

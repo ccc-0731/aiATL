@@ -107,7 +107,7 @@ body.darkmode .solution-entry {
         {% if uploaded_images %}
         <div class="uploaded-images">
             {% for img in uploaded_images %}
-                <iframe src="{{ img }}" alt="Uploaded image">
+                <iframe width="560" height="315" src={{img}} frameborder="0" allowfullscreen></iframe>
             {% endfor %}
         </div>
         {% endif %}

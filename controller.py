@@ -116,9 +116,13 @@ def getSolutions():
         answers.append(value)
     filePaths:list[str] = DAL.get_file_paths(username)
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
+    print(solutions)
+    answer = solutions[0]
+    prompt = solutions[1]
 
+    
     DAL.eraseUserData(username)
-    return render_template("solutionsIframePotential.html",answers=solutions,images=filePaths, uploaded_images=yt.promptToVideos("bike"))
+    return render_template("solutions.html",answer=answer,images=filePaths, uploaded_images=yt.promptToVideos(prompt))
 
 # @app.route("/solution", methods=["POST"])
 # def solution():
