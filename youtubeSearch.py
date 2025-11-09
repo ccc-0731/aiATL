@@ -3,9 +3,9 @@ from dotenv import load_dotenv
 import autogen
 from autogen import AssistantAgent, LLMConfig
 from autogen.tools.experimental import YoutubeSearchTool
-
+import json
 load_dotenv()
-def promptToVideos(prompt:str) -> list[str]:
+def promptToVideos(prompt:str):
     llm_config = LLMConfig(
         model="gemini-2.0-flash",
         api_key=os.getenv("GEMINI_API_KEY"),
@@ -32,10 +32,14 @@ def promptToVideos(prompt:str) -> list[str]:
     max_turns=2,
     user_input=False,
     )
+    
+    
+    return response.messages
 
-    # Iterate through the chat automatically with console output
-    response.process()
-    return [response.above_run,response.events,response.summary,response.uuid,response.last_speaker,response.process]
+
+    #return dict(assistant.chat_messages)
+
+
 
 if __name__ == "__main__":
-    print(promptToVideos("find me videos on frogs"))
+    print(promptToVideos("frogs"))
