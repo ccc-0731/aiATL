@@ -39,8 +39,11 @@
   </div>
 
 <div id="bearLoading">
-  <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}"
-       alt="Bear Loading Animation">
+  <picture>
+  <source srcset="{{ url_for('static', filename='images/invertedBearLoading.gif') }}" media="(prefers-color-scheme: dark)">
+  <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation">
+</picture>
+
   <h2 id="bearText">Processing your submission...</h2>
 </div>
 
