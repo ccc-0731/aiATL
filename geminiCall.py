@@ -41,22 +41,11 @@ def call_read(stage, prompt=None, filepaths=None):
         system_prompt = (
             "Role: You are a domain expert helping a novice diagnose a problem. "
             "Use the prior conversation (images, Q&A) as context. "
-            "Return a valid JSON object — not text, not markdown. "
-            "It must have these exact fields:\n\n"
-            "{\n"
-            '  "title": "short clear summary of the detected problem",\n'
-            '  "confidence": "high/medium/low",\n'
-            '  "solutions": [\n'
-            "    {\n"
-            '      "title": "step title",\n'
-            '      "description": "step-by-step fix instructions",\n'
-            '      "url": "relevant YouTube or guide link (if found, else empty string)"\n'
-            "    }\n"
-            "  ]\n"
-            "}\n\n"
-            "The `solutions` array must contain 3–5 items. "
-            "All URLs must come from valid search results retrieved with the GoogleSearch tool. "
-            "If no link is available, leave it as an empty string."
+            "Return a valid python string with two sections, delimited by a '|'."
+            "It must follow this format:\n\n"
+            "RESPONSE | PROMPT"
+            "where: The RESPONSE is a short clear summary of the detected problem, and step-by-step fixes."
+            "The PROMPT is a detailed description for what youtube videos that are relevant."
         )
 
     # combine prompt
@@ -87,26 +76,15 @@ def call_read(stage, prompt=None, filepaths=None):
         return [x for x in output.split(";") if x != ""]
 
     if stage == 2:
-        # Clean up Markdown or stray formatting
-        cleaned = (
-            output.replace("```json", "")
-                .replace("```", "")
-                .strip()
-        )
-        # Try JSON parse
-        try:
-            parsed = json.loads(cleaned)
-        except json.JSONDecodeError:
-            print("⚠️ Model returned invalid JSON. Here's raw text:\n", output)
-            parsed = {"error": "invalid_json", "raw": output}
-        return parsed
+        return [x for x in output.split("|") if x != ""]
 
-
-'''#testing code
+'''testing code
 if __name__ == "__main__":
-    result2 = call_read(
-        stage=2,
-        prompt="The print head keeps colliding with the model halfway through the print.",
-        filepaths=["noodles.JPG"]
-    )
-    print(json.dumps(result2, indent=2))'''
+    test_image = ["noodles.JPG"]
+    questions = call_read(stage=1, filepaths=test_image)
+    print("Stage 1 Questions:", questions)
+
+    user_answer = "The print failed halfway through; I was using PLA with a cold bed."
+    output = call_read(stage=2, prompt=user_answer, filepaths=test_image)
+    print("Stage 2 Output:", output)
+'''
