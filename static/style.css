@@ -11,7 +11,7 @@ html, body {
   height: 100%;
   font-family: 'Helvetica', sans-serif;
   scroll-behavior: smooth;
-  transition: background 0.5s ease, color 0.5s ease;
+  transition: background 0.6s ease, color 0.6s ease;
   position: relative;
   overflow-x: hidden;
 }
@@ -67,7 +67,7 @@ body::before {
   background: rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(20px) saturate(1.5);
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-  animation: fadeUp 0.9s ease-out both;
+  animation: fadeUp 0.6s ease-out both;
   position: relative;
   z-index: 2;
 }
@@ -111,7 +111,7 @@ body.darkmode h2 {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 50px;
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
 }
 
 .btn-custom {
@@ -154,7 +154,7 @@ input[type="file"] {
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.3);
   cursor: pointer;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  transition: border-color 0.6s ease, background 0.6s ease;
 }
 
 input[type="file"]:hover {
@@ -212,7 +212,7 @@ input[type="text"] {
   border-radius: 50px;
   background: rgba(255, 255, 255, 0.4);
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
 }
 
 input[type="text"]:focus {
@@ -244,7 +244,7 @@ input[type="submit"] {
   font-weight: bold;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.6s ease;
 }
 
 input[type="submit"]:hover {
