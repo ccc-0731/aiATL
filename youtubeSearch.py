@@ -1,17 +1,16 @@
 import os
-
+from dotenv import load_dotenv
 import autogen
 from autogen import AssistantAgent, LLMConfig
 from autogen.tools.experimental import YoutubeSearchTool
 
+load_dotenv()
 def promptToVideos(prompt:str) -> list[str]:
-    llm_config = LLMConfig([
-    {
-        "model": "gemini-pro",
-        "api_key": "GEMINI_API_KEY",
-        "api_type": "google"
-    }
-]).where(model=["gpt-5-nano"])
+    llm_config = llm_config = LLMConfig(
+        model="gemini-pro",
+        api_key=os.getenv("GEMINI_API_KEY"),
+        api_type="google"
+    )
 
     assistant = AssistantAgent(
         name="assistant",
