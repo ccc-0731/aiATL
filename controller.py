@@ -1,3 +1,4 @@
+'''
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 import requests;
 from werkzeug.utils import secure_filename
@@ -63,7 +64,7 @@ def logout():
     session.pop("logged_in", None)
     return redirect("/")
 
-#uploads the file to 
+#uploads the file to
 @app.route("/upload_image", methods=['GET', 'POST'])
 def uploadFile():
     if "logged_in" not in session:
@@ -93,14 +94,14 @@ def uploadFile():
                 #saves the file to the images folder in database
                 DAL.saveFile(file, session["username"],filename)
                 filePaths.append(IMAGESPATH+session["username"]+"/"+filename)
-                
+
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
         return render_template('questions.html',testQuestions=questionsList,images=filePaths,)
-            
+
     return redirect("/")
-        
+
 @app.route("/solution", methods=['GET',"POST"])
 def getSolutions():
     if "logged_in" not in session:
@@ -112,11 +113,57 @@ def getSolutions():
         answers.append(value)
     filePaths:list[str] = DAL.get_file_paths(username)
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
-    
+
     DAL.eraseUserData(username)
     return render_template("solutions.html",answers=solutions,images=filePaths)
 
 
 
 if __name__ == "__main__":
+    app.run(debug=True)
+    '''
+
+# test_controller.py
+
+from flask import Flask, jsonify, render_template
+
+app = Flask(__name__, template_folder='templates')
+app.secret_key = "test_secret_key"
+
+# ====== TEMPORARY TEST SOLUTION ROUTE ======
+@app.route('/solution')
+def test_solution():
+    """Test endpoint returning fake AI solutions + YouTube videos."""
+    return jsonify({
+        "solutions": [
+            {
+                "title": "Fixing a cracked phone screen",
+                "description": "You can use a DIY repair kit or replace the glass entirely.",
+                "url": "https://www.youtube.com/watch?v=8xTzEJUM6aI"
+            },
+            {
+                "title": "Laptop not turning on",
+                "description": "Try a hard reset and check the power supply connection.",
+                "url": "https://youtu.be/VY5X9ebFq5E"
+            },
+            {
+                "title": "Water-damaged keyboard",
+                "description": "Turn off the device immediately and dry components before reassembly.",
+                "url": "https://www.youtube.com/shorts/df8sNqzvFfU"
+            },
+            {
+                "title": "Unresponsive touchpad",
+                "description": "Update drivers and disable external mouse override in system settings.",
+                "url": ""  # intentionally left blank (no video)
+            }
+        ]
+    })
+
+@app.route('/')
+def index():
+    """Renders the solutions.html page directly for quick testing."""
+    return render_template('solutions.html', uploaded_images=[], answers=[])
+
+
+if __name__ == '__main__':
     app.run(debug=True)
