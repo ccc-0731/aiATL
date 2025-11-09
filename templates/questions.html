@@ -13,12 +13,12 @@
         <h2>What's going wrong? We can help.</h2>
 
         <form action="/solution" method="POST" enctype="multipart/form-data" class="mt-4" onsubmit="showBear(event)">
-         
+
           {% for question in testQuestions %}
             <label for="questions" class="form-label">{{question}}</label>
             <input id="questions" type="text" name="image_input" class="form-control" accept="image/*" capture="camera" multiple>
-            {% endfor %}    
-           
+            {% endfor %}
+
             <!-- Buttons aligned at bottom -->
             <div class="d-flex justify-content-between mt-4">
                 <a href="/logout" class="btn btn-danger">Logout</a>
@@ -34,10 +34,11 @@
     <!-- ====== Bear Loading GIF (static/images) ====== -->
 <!-- ====== Bear Loading GIF (static/images) ====== -->
 <div id="bearLoading">
-  <picture>
-    <source srcset="{{ url_for('static', filename='images/invertedBearLoading.gif') }}" media="(prefers-color-scheme: dark)">
-    <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation">
-  </picture>
+  <img id="bearGif"
+     src="{{ url_for('static', filename='images/BearLoading.gif') }}"
+     alt="Bear Loading Animation"
+     style="width:300px;">
+
   <h2 id="bearText">Processing your submission...</h2>
 </div>
 
@@ -115,6 +116,35 @@ window.addEventListener("load", () => {
 
   // hide bear once questions load (adjust if you have fetch logic)
   setTimeout(() => bear.style.display = "none", 1200);
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const bearGif = document.getElementById("bearGif");
+  const body = document.body;
+
+  function updateBearGif() {
+    const isDark = body.classList.contains("darkmode");
+    bearGif.src = isDark
+      ? "{{ url_for('static', filename='images/invertedBearLoading.gif') }}"
+      : "{{ url_for('static', filename='images/BearLoading.gif') }}";
+  }
+
+  // Run once when the page loads
+  updateBearGif();
+
+  // Listen to your toggle button (if it has ID 'themeToggleBtn')
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      setTimeout(updateBearGif, 100);
+    });
+  }
+
+  // Backup: watch for body class changes from theme_toggle.js
+  const observer = new MutationObserver(updateBearGif);
+  observer.observe(body, { attributes: true, attributeFilter: ["class"] });
 });
 </script>
 
