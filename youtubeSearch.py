@@ -6,8 +6,8 @@ from autogen.tools.experimental import YoutubeSearchTool
 
 load_dotenv()
 def promptToVideos(prompt:str) -> list[str]:
-    llm_config = llm_config = LLMConfig(
-        model="gemini-pro",
+    llm_config = LLMConfig(
+        model="gemini-2.0-flash",
         api_key=os.getenv("GEMINI_API_KEY"),
         api_type="google"
     )
@@ -16,8 +16,8 @@ def promptToVideos(prompt:str) -> list[str]:
         name="assistant",
         llm_config=llm_config,
     )
-    youtube_api_key = os.getenv("YOUTUBE_API_KEY")
 
+    youtube_api_key = os.getenv("YOUTUBE_API_KEY")
     assert youtube_api_key is not None, "Please set YOUTUBE_API_KEY environment variable"
 
     youtube_tool = YoutubeSearchTool(
@@ -25,6 +25,7 @@ def promptToVideos(prompt:str) -> list[str]:
     )
     # Register the tool with the assistant
     youtube_tool.register_for_llm(assistant)
+
     response = assistant.run(
     message=prompt,
     tools=assistant.tools,
@@ -34,6 +35,7 @@ def promptToVideos(prompt:str) -> list[str]:
 
     # Iterate through the chat automatically with console output
     response.process()
+    return [response.above_run,response.events,response.summary,response.uuid,response.last_speaker,response.process]
 
 if __name__ == "__main__":
-    promptToVideos("find me videos on frogs")
+    print(promptToVideos("find me videos on frogs"))

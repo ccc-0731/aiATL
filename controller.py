@@ -71,6 +71,7 @@ def uploadFile():
         #redirects to login
         return render_template('login_form.html')
     FORMNAME = 'image_input'
+    username = session["username"]
     if request.method == 'POST':
         if FORMNAME not in request.files:
             flash('No file part')
@@ -98,7 +99,7 @@ def uploadFile():
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
-        return render_template('questions.html',testQuestions=questionsList,images=filePaths,)
+        return render_template('questions.html',testQuestions=questionsList,images=filePaths,username=username)
 
     return redirect("/")
 
