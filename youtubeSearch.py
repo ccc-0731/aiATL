@@ -5,7 +5,13 @@ from autogen import AssistantAgent, LLMConfig
 from autogen.tools.experimental import YoutubeSearchTool
 
 def promptToVideos(prompt:str) -> list[str]:
-    llm_config = LLMConfig(path="OAI_CONFIG_LIST").where(model=["gpt-5-nano"])
+    llm_config = LLMConfig([
+    {
+        "model": "gemini-pro",
+        "api_key": "GEMINI_API_KEY",
+        "api_type": "google"
+    }
+]).where(model=["gpt-5-nano"])
 
     assistant = AssistantAgent(
         name="assistant",
@@ -31,4 +37,4 @@ def promptToVideos(prompt:str) -> list[str]:
     response.process()
 
 if __name__ == "__main__":
-    promptToVideos("find m videos on frogs")
+    promptToVideos("find me videos on frogs")
