@@ -1,4 +1,4 @@
-
+'''
 from flask import Flask, render_template, redirect, url_for, request, session, flash
 import requests;
 from werkzeug.utils import secure_filename
@@ -125,6 +125,7 @@ if __name__ == "__main__":
 
 
 '''
+
 # test_controller.py
 
 from flask import Flask, jsonify, render_template
@@ -169,4 +170,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-'''
