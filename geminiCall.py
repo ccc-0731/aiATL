@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 from google import genai
 from google.genai import types
+import json
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -38,33 +39,35 @@ def call_read(stage, prompt=None, filepaths=None):
         )
 
         system_prompt = (
-            "Role: You are a domain expert helping a novice user diagnose a problem using the conversation so far (images, prior Q&A, and clarifications)."
-            '''
-            Your output will be separated into FIVE sections. 
-            ***The sections will be delimited by semicolons. DO NOT USE SEMICOLONS otherwise.***
-            Based on that context:
-            First section: summarize and interpret the issue clearly in 1-2 sentences exactly what the problem can possibly be.
-            Second section: Your confidence level about the problem diagnosis
-            Third section: a detailed step-by-step guide to help solve the problem, which is formatted for readability.
-            Fourth section: search the internet for relevant tutorial videos, guides or websites. 
-            Only use the valid URLs retrieved from the Google Search tool.
-            Do not include any additional explanations or commentary after the URLs.
-            Fifth section: Based on the problem you identified, create a prompt for an AI that would find the most appropriate youtube videos.
-            '''
+            "Role: You are a domain expert helping a novice diagnose a problem. "
+            "Use the prior conversation (images, Q&A) as context. "
+            "Return a valid JSON object — not text, not markdown. "
+            "It must have these exact fields:\n\n"
+            "{\n"
+            '  "title": "short clear summary of the detected problem",\n'
+            '  "confidence": "high/medium/low",\n'
+            '  "solutions": [\n'
+            "    {\n"
+            '      "title": "step title",\n'
+            '      "description": "step-by-step fix instructions",\n'
+            '      "url": "relevant YouTube or guide link (if found, else empty string)"\n'
+            "    }\n"
+            "  ]\n"
+            "}\n\n"
+            "The `solutions` array must contain 3–5 items. "
+            "All URLs must come from valid search results retrieved with the GoogleSearch tool. "
+            "If no link is available, leave it as an empty string."
         )
 
-    # --- Combine with user prompt if provided ---
-    if prompt:
-        full_prompt = f"{system_prompt} Here is a user description: {prompt}"
-    else:
-        full_prompt = system_prompt
+    # combine prompt
+    full_prompt = f"{system_prompt}\n\nUser said: {prompt or ''}"
 
     # --- Handle (multiple) image uploads ---
-    contents = [full_prompt] + history # include previous turns
+    contents = [full_prompt] + history
 
     # Upload multiple files
     uploaded_files = [client.files.upload(file=path) for path in filepaths]
-    contents.append(uploaded_files)
+    contents += uploaded_files
 
     # --- Send to chat (Gemini remembers previous context automatically) ---
     response = client.models.generate_content(
@@ -72,35 +75,38 @@ def call_read(stage, prompt=None, filepaths=None):
         contents=contents,
         config=config
     )
-    text = response.text
+
+    output = response.text.strip()
+
+    # Clean up Markdown or stray formatting
+    cleaned = (
+        output.replace("```json", "")
+              .replace("```", "")
+              .strip()
+    )
+
+    # Try JSON parse
+    try:
+        parsed = json.loads(cleaned)
+    except json.JSONDecodeError:
+        print("⚠️ Model returned invalid JSON. Here's raw text:\n", output)
+        parsed = {"error": "invalid_json", "raw": output}
+
+
 
     if stage == 1:
         # Save turn in memory as plain text
         history.append(f"User: {prompt}")
-        history.append(f"AI: {text}")
-    
-    text = [x for x in text.split(";") if x != ""]
-    print(text)
-    return text
+        history.append(f"AI: {output}")
 
-#testing code
-'''
+    return parsed
+
+
+'''#testing code
 if __name__ == "__main__":
-    # First multimodal call
-    result1 = call_read(
-        stage=1,
-        prompt="Bambulab A1 3d printer",
-        filepaths=["test2.JPG"]
-    )
-    print("FIRST:", result1)
-
-    name = input("Your answers: ")
-
-    # Second text-only call (no images, continues same chat session)
     result2 = call_read(
         stage=2,
-        prompt=name,
-        filepaths=["test2.JPG"]
+        prompt="The print head keeps colliding with the model halfway through the print.",
+        filepaths=["noodles.JPG"]
     )
-    print("SECOND:", result2)
-'''
+    print(json.dumps(result2, indent=2))'''
