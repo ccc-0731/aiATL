@@ -1,10 +1,12 @@
 
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 import requests;
 from werkzeug.utils import secure_filename
 from model import DAL
 from werkzeug.utils import secure_filename
 import geminiCall as gemini
+from geminiCall import call_read  # your existing function
+
 ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg', 'gif'}
 DELIMITER: str = ";"
 
@@ -103,7 +105,7 @@ def uploadFile():
 
     return redirect("/")
 
-@app.route("/solution", methods=['GET',"POST"])
+'''@app.route("/solution", methods=['GET',"POST"])
 def getSolutions():
     if "logged_in" not in session:
         #redirects to login
@@ -116,7 +118,19 @@ def getSolutions():
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
 
     DAL.eraseUserData(username)
-    return render_template("solutions.html",answers=solutions,images=filePaths)
+    return render_template("solutions.html",answers=solutions,images=filePaths)'''
+
+@app.route("/solution", methods=["POST"])
+def solution():
+    data = request.get_json(force=True)
+    prompt = data.get("prompt")
+    filepaths = data.get("filepaths")
+
+    # Call Gemini stage 2
+    result = call_read(stage=2, prompt=prompt, filepaths=filepaths)
+
+    # Extract the solutions list only
+    return jsonify({"solutions": result.get("solutions", [])})
 
 
 

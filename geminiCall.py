@@ -76,30 +76,30 @@ def call_read(stage, prompt=None, filepaths=None):
         config=config
     )
 
-    output = response.text.strip()
-
-    # Clean up Markdown or stray formatting
-    cleaned = (
-        output.replace("```json", "")
-              .replace("```", "")
-              .strip()
-    )
-
-    # Try JSON parse
-    try:
-        parsed = json.loads(cleaned)
-    except json.JSONDecodeError:
-        print("⚠️ Model returned invalid JSON. Here's raw text:\n", output)
-        parsed = {"error": "invalid_json", "raw": output}
-
+    output = response.text
 
 
     if stage == 1:
         # Save turn in memory as plain text
         history.append(f"User: {prompt}")
         history.append(f"AI: {output}")
+        output = response.text
+        return [x for x in output.split(";") if x != ""]
 
-    return parsed
+    if stage == 2:
+        # Clean up Markdown or stray formatting
+        cleaned = (
+            output.replace("```json", "")
+                .replace("```", "")
+                .strip()
+        )
+        # Try JSON parse
+        try:
+            parsed = json.loads(cleaned)
+        except json.JSONDecodeError:
+            print("⚠️ Model returned invalid JSON. Here's raw text:\n", output)
+            parsed = {"error": "invalid_json", "raw": output}
+        return parsed
 
 
 '''#testing code
