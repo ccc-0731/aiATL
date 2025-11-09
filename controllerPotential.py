@@ -117,10 +117,7 @@ def getSolutions():
     filePaths:list[str] = DAL.get_file_paths(username)
     result = gemini.call_read(2,"|".join(answers),filePaths)
 
-    # Extract the solutions list only
-    solutions111 = jsonify({"solutions": result.get("solutions", [])})
-
-    return render_template('solutionsIframePotential.html', uploaded_images=[], answers=[])
+    return render_template('solutionsIframePotential.html', uploaded_images=filePaths, solutions=result["solutions"])
 
 if __name__ == "__main__":
     app.run(debug=True)
