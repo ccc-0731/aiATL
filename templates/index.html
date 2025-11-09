@@ -44,18 +44,19 @@
   position:fixed;
   top:0; left:0;
   width:100%; height:100%;
-  background:white;
   z-index:9999;
   justify-content:center;
   align-items:center;
   flex-direction:column;
   text-align:center;
+  transition: background 0.3s ease;
 ">
-  <img src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation" style="width:300px;">
-  <h2 style="margin-top:20px; color:#333; font-family:system-ui, sans-serif;">
+  <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation" style="width:300px;">
+  <h2 id="bearText" style="margin-top:20px; font-family:system-ui, sans-serif;">
     Processing your submission...
   </h2>
 </div>
+
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -72,5 +73,32 @@
 </script>
 
 <script src="../static/theme_toggle.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const bearLoader = document.getElementById("bearLoading");
+  const bearGif = document.getElementById("bearGif");
+  const bearText = document.getElementById("bearText");
+  const body = document.body;
+
+  function updateBearTheme() {
+    const isDark = body.classList.contains("darkmode");
+    // Swap GIF
+    bearGif.src = isDark
+      ? "{{ url_for('static', filename='images/BearLoadingDark.gif') }}"
+      : "{{ url_for('static', filename='images/BearLoading.gif') }}";
+    // Match background and text colors
+    bearLoader.style.background = isDark ? "black" : "white";
+    bearText.style.color = isDark ? "white" : "#333";
+  }
+
+  // Apply once on load
+  updateBearTheme();
+
+  // Watch for theme changes if user toggles
+  const observer = new MutationObserver(updateBearTheme);
+  observer.observe(body, { attributes: true, attributeFilter: ["class"] });
+});
+</script>
+
 </body>
 </html>
