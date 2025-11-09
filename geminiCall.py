@@ -40,8 +40,8 @@ def call_read(stage, prompt=None, filepaths=None):
         system_prompt = (
             "Role: You are a domain expert helping a novice user diagnose a problem using the conversation so far (images, prior Q&A, and clarifications)."
             '''
-            Your output will be separated into FOUR sections. 
-            All the sections will be delimited by semicolons. DO NOT USE SEMICOLONS otherwise.
+            Your output will be separated into FIVE sections. 
+            ***The sections will be delimited by semicolons. DO NOT USE SEMICOLONS otherwise.***
             Based on that context:
             First section: summarize and interpret the issue clearly in 1-2 sentences exactly what the problem can possibly be.
             Second section: Your confidence level about the problem diagnosis
