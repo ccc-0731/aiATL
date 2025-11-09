@@ -1,0 +1,34 @@
+import os
+
+import autogen
+from autogen import AssistantAgent, LLMConfig
+from autogen.tools.experimental import YoutubeSearchTool
+
+def promptToVideos(prompt:str) -> list[str]:
+    llm_config = LLMConfig(path="OAI_CONFIG_LIST").where(model=["gpt-5-nano"])
+
+    assistant = AssistantAgent(
+        name="assistant",
+        llm_config=llm_config,
+    )
+    youtube_api_key = os.getenv("YOUTUBE_API_KEY")
+
+    assert youtube_api_key is not None, "Please set YOUTUBE_API_KEY environment variable"
+
+    youtube_tool = YoutubeSearchTool(
+        youtube_api_key=youtube_api_key,
+    )
+    # Register the tool with the assistant
+    youtube_tool.register_for_llm(assistant)
+    response = assistant.run(
+    message=prompt,
+    tools=assistant.tools,
+    max_turns=2,
+    user_input=False,
+    )
+
+    # Iterate through the chat automatically with console output
+    response.process()
+
+if __name__ == "__main__":
+    promptToVideos("find m videos on frogs")
