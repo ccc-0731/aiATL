@@ -32,7 +32,7 @@ def promptToVideos(prompt:str):
     youtube_tool.register_for_llm(assistant)
 
     response = assistant.run(
-    message=prompt,
+    message=prompt+"Your entire goal is to provide related youtube links to help the user. You should always use the youtube search tool and provide around 5 videos",
     tools=assistant.tools,
     max_turns=2,
     user_input=False,
