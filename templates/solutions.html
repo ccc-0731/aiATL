@@ -142,16 +142,7 @@
                 '"': '&quot;'
             }[c])) : '';
         }
-
-        function refreshSolutions() {
-            const container = document.getElementById('solutions');
-            container.innerHTML = '<div class="loading text-center mt-3">Refreshing solutions...</div>';
-            fetchSolutions();
-        }
-
-        // Initial load
-        fetchSolutions();
-        setInterval(fetchSolutions, 10000);
+        
     </script>
 <script src="../static/theme_toggle.js"></script>
 </body>
