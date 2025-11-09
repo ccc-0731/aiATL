@@ -116,32 +116,6 @@
 </script>
 
 <script src="../static/theme_toggle.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const bearLoader = document.getElementById("bearLoading");
-  const bearGif = document.getElementById("bearGif");
-  const bearText = document.getElementById("bearText");
-  const body = document.body;
-
-  function updateBearTheme() {
-    const isDark = body.classList.contains("darkmode");
-    // Swap GIF
-    bearGif.src = isDark
-      ? "{{ url_for('static', filename='images/BearLoadingDark.gif') }}"
-      : "{{ url_for('static', filename='images/BearLoading.gif') }}";
-    // Match background and text colors
-    bearLoader.style.background = isDark ? "black" : "white";
-    bearText.style.color = isDark ? "white" : "#333";
-  }
-
-  // Apply once on load
-  updateBearTheme();
-
-  // Watch for theme changes if user toggles
-  const observer = new MutationObserver(updateBearTheme);
-  observer.observe(body, { attributes: true, attributeFilter: ["class"] });
-});
-</script>
 
 </body>
 </html>
