@@ -37,6 +37,63 @@
         body.darkmode .solution-step {
             background: rgba(0,0,0,0.25);
         }
+
+        .solution-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 10px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+body.darkmode .solution-entry {
+  background: rgba(20,20,20,0.6);
+}
+
+.solution-text {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--bear-text, #333);
+  min-width: 220px;
+}
+
+.divider {
+  width: 2px;
+  height: 20px;
+  background: var(--bear-text, #333);
+  opacity: 0.3;
+}
+
+.solution-video {
+  flex-shrink: 0;
+  width: 300px;
+  height: 170px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.solution-video iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .solution-entry {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .divider {
+    display: none;
+  }
+}
+
     </style>
 </head>
 
@@ -89,39 +146,34 @@
                     return;
                 }
 
-                // Render all solutions as one numbered list
-                container.innerHTML = `
-                    <ol class="solution-list">
-                        ${data.solutions.map(solution => `
-                            <li class="solution-item">
-                                <div class="block">
-                                    <div class="solution-title fw-bold fs-5 mb-2">${escapeHtml(solution.title)}</div>
-                                    <div class="solution-meta mb-2">
-                                        Difficulty: ${escapeHtml(solution.difficulty || 'N/A')} •
-                                        Time required: ${escapeHtml(solution.time || 'N/A')}
-                                    </div>
-                                    <div class="solution-content">
-                                        ${solution.description ? `<p>${escapeHtml(solution.description)}</p>` : ''}
-                                        ${solution.steps ? `
-                                            <ol class="solution-steps text-start">
-                                                ${solution.steps.map(step => `
-                                                    <li class="solution-step">${escapeHtml(step)}</li>
-                                                `).join('')}
-                                            </ol>
-                                        ` : ''}
-                                    </div>
-                                    ${solution.url ? `
-                                        <div class="mt-3 text-center">
-                                            <a href="${escapeHtml(solution.url)}" target="_blank" class="btn btn-custom btn-sm">
-                                                View Full Guide
-                                            </a>
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            </li>
-                        `).join('')}
-                    </ol>
-                `;
+                // Render each solution with answer + optional video preview
+container.innerHTML = `
+  <ol class="solution-list">
+    ${data.solutions.map(solution => {
+      // Extract YouTube video ID if URL exists
+      let videoId = '';
+      if (solution.url && solution.url.includes('youtube')) {
+        const match = solution.url.match(/(?:v=|be\/|shorts\/)([A-Za-z0-9_-]{11})/);
+        if (match) videoId = match[1];
+      }
+
+      return `
+        <li class="solution-item">
+          <div class="solution-entry">
+            <div class="solution-text">
+              ${escapeHtml(solution.description || solution.title || '')}
+            </div>
+            <div class="divider"></div>
+            ${videoId
+              ? `<div class="solution-video"><iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen loading="lazy"></iframe></div>`
+              : `<div class="solution-video text-muted">(No video provided)</div>`
+            }
+          </div>
+        </li>`;
+    }).join('')}
+  </ol>
+`;
+
 
             } catch (err) {
                 console.error('fetchSolutions error', err);
@@ -141,6 +193,9 @@
                 '"': '&quot;'
             }[c])) : '';
         }
+
+        window.addEventListener('DOMContentLoaded', fetchSolutions);
+
 
     </script>
 <script src="../static/theme_toggle.js"></script>
