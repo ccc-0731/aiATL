@@ -39,10 +39,11 @@
   </div>
 
 <div id="bearLoading">
-  <picture>
-  <source srcset="{{ url_for('static', filename='images/invertedBearLoading.gif') }}" media="(prefers-color-scheme: dark)">
-  <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation">
-</picture>
+  <img id="bearGif"
+     src="{{ url_for('static', filename='images/BearLoading.gif') }}"
+     alt="Bear Loading Animation"
+     style="width:300px;">
+
 
   <h2 id="bearText">Processing your submission...</h2>
 </div>
@@ -112,6 +113,36 @@
     return true;
   }
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const bearGif = document.getElementById("bearGif");
+  const body = document.body;
+
+  function updateBearGif() {
+    const isDark = body.classList.contains("darkmode");
+    bearGif.src = isDark
+      ? "{{ url_for('static', filename='images/invertedBearLoading.gif') }}"
+      : "{{ url_for('static', filename='images/BearLoading.gif') }}";
+  }
+
+  // Update immediately when the page loads
+  updateBearGif();
+
+  // If your toggle button has an ID (e.g., id="themeToggleBtn"), attach listener
+  const themeToggleBtn = document.getElementById("themeToggleBtn");
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener("click", () => {
+      setTimeout(updateBearGif, 100); // small delay for the body class to update
+    });
+  }
+
+  // Backup: detect any theme change by watching the <body> class
+  const observer = new MutationObserver(updateBearGif);
+  observer.observe(body, { attributes: true, attributeFilter: ["class"] });
+});
+</script>
+
 
 <script src="../static/theme_toggle.js"></script>
 
