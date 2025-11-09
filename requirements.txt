@@ -6,4 +6,4 @@ google-generativeai
 google-genai
 validators
 gunicorn
-shutil
+elevenlabs
