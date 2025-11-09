@@ -33,7 +33,7 @@ def index():  # put application's code here
 def loginForm():
     if "logged_in" not in session:
         return render_template('login_form.html')
-    return redirect(url_for("index"))
+    return redirect("/")
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -48,7 +48,7 @@ def login():
     #adds a cookie to say you're logged in
     session["logged_in"] = True
     #sends you to index
-    return redirect(url_for('index'))
+    return redirect("/")
 
 #logs you out
 @app.route('/logout')
@@ -61,7 +61,7 @@ def logout():
     #removes all info from cookie
     session.pop("username", None)
     session.pop("logged_in", None)
-    return redirect(url_for('index'))
+    return redirect("/")
 
 #uploads the file to 
 @app.route("/upload_image", methods=['GET', 'POST'])
@@ -73,7 +73,7 @@ def uploadFile():
     if request.method == 'POST':
         if FORMNAME not in request.files:
             flash('No file part')
-            return redirect(url_for('index'))
+            return redirect("/")
         files= request.files.getlist(FORMNAME)
         test = request.files[FORMNAME]
         print(files)
@@ -84,7 +84,7 @@ def uploadFile():
         for file in files:
             if file.filename == '':
                 flash('No selected file')
-                return redirect(url_for('index'))
+                return redirect("/")
             if file and allowed_file(file.filename):
                 IMAGESPATH = "database/images/"
                 print(file)
@@ -97,15 +97,15 @@ def uploadFile():
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
-        return render_template('questions.html',testQuestions=questionsList,images=filePaths)
+        return render_template('questions.html',testQuestions=questionsList,images=filePaths,)
             
-    return redirect(url_for('index'))
+    return redirect("/")
         
 @app.route("/solution", methods=['GET',"POST"])
 def getSolutions():
     if "logged_in" not in session:
         #redirects to login
-        return render_template('login_form.html')
+        return redirect('/')
     username:str = session["username"]
     answers:list[str] = []
     for value in request.values:
