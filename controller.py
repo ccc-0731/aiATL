@@ -33,7 +33,7 @@ def index():  # put application's code here
 def loginForm():
     if "logged_in" not in session:
         return render_template('login_form.html')
-    return render_template(url_for("index"))
+    return redirect(url_for("index"))
 
 @app.route('/login', methods=['POST'])
 def login():
