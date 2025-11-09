@@ -83,6 +83,36 @@
     color: var(--bear-text);
   }
 </style>
+<script>
+function showBear(event) {
+  // prevent immediate navigation
+  event.preventDefault();
+
+  // hide the form
+  document.querySelector(".container").style.display = "none";
+
+  // show the bear overlay
+  const bear = document.getElementById("bearLoading");
+  const bearText = document.getElementById("bearText");
+  bearText.textContent = "Processing your submission...";
+  bear.style.display = "flex";
+
+  // continue form submission
+  setTimeout(() => event.target.submit(), 50);
+}
+
+// optional: show loading bear while waiting for questions
+window.addEventListener("load", () => {
+  const bear = document.getElementById("bearLoading");
+  const bearText = document.getElementById("bearText");
+  bearText.textContent = "Loading your questions...";
+  bear.style.display = "flex";
+
+  // hide bear once questions load (adjust if you have fetch logic)
+  setTimeout(() => bear.style.display = "none", 1200);
+});
+</script>
+
 
 <script src="../static/theme_toggle.js"></script>
 </body>
