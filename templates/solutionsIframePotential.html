@@ -110,15 +110,6 @@ body.darkmode .solution-entry {
     <div class="container">
         <h1 class="text-center">Repair Solutions</h1>
 
-        <!-- uploaded images on top -->
-        {% if uploaded_images %}
-        <div class="uploaded-images">
-            {% for img in uploaded_images %}
-                <img src="{{ img }}" alt="Uploaded image">
-            {% endfor %}
-        </div>
-        {% endif %}
-
         <!-- solutions container -->
         <div id="solutions" class="mt-4">
           {% if solutions %}
