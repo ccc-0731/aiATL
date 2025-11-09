@@ -1,4 +1,4 @@
-'''
+import youtubeSearch as yt
 from flask import Flask, render_template, redirect, url_for, request, session, flash, jsonify
 import requests;
 from werkzeug.utils import secure_filename
@@ -118,19 +118,19 @@ def getSolutions():
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
 
     DAL.eraseUserData(username)
-    return render_template("solutions.html",answers=solutions,images=filePaths)
+    return render_template("solutions.html",answers=solutions,images=filePaths, uploaded_images=yt.promptToVideos("bike"))
 
-@app.route("/solution", methods=["POST"])
-def solution():
-    data = request.get_json(force=True)
-    prompt = data.get("prompt")
-    filepaths = data.get("filepaths")
+# @app.route("/solution", methods=["POST"])
+# def solution():
+#     data = request.get_json(force=True)
+#     prompt = data.get("prompt")
+#     filepaths = data.get("filepaths")
 
-    # Call Gemini stage 2
-    result = call_read(stage=2, prompt=prompt, filepaths=filepaths)
+#     # Call Gemini stage 2
+#     result = call_read(stage=2, prompt=prompt, filepaths=filepaths)
 
-    # Extract the solutions list only
-    return jsonify({"solutions": result.get("solutions", [])})
+#     # Extract the solutions list only
+#     return jsonify({"solutions": result.get("solutions", [])})
 
 
 
@@ -138,25 +138,5 @@ if __name__ == "__main__":
     app.run(debug=True)
 
 
-'''
-
-# test_controller.py
-
-from flask import Flask, jsonify, render_template
-
-app = Flask(__name__, template_folder='templates')
-app.secret_key = "test_secret_key"
-
-# ====== TEMPORARY TEST SOLUTION ROUTE ======
-
-
-@app.route('/')
-def index():
-    """Renders the solutions.html page directly for quick testing."""
-    return render_template('solutions.html', uploaded_images=[], answers=[])
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 

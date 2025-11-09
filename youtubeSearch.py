@@ -53,4 +53,4 @@ def promptToVideos(prompt:str):
 
 
 if __name__ == "__main__":
-    print(promptToVideos("frogs"))
+    print(promptToVideos("f"))
