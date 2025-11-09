@@ -58,6 +58,8 @@ def logout():
     if "logged_in" not in session:
         #redirects to login
         return render_template('login_form.html')
+    username: str = session["username"]
+    DAL.eraseUserData(username)
     #removes all info from cookie
     session.pop("username", None)
     session.pop("logged_in", None)
@@ -97,7 +99,7 @@ def uploadFile():
         #Gemini Stuff
         questionsList: list[str] = gemini.call_read(stage=1, filepaths=filePaths)
         print(questionsList)
-        return render_template('questions.html',testQuestions=questionsList)
+        return render_template('questions.html',testQuestions=questionsList,images=filePaths)
             
     return redirect(url_for('index'))
         
@@ -113,8 +115,8 @@ def getSolutions():
     filePaths:list[str] = DAL.get_file_paths(username)
     solutions:list[str] = gemini.call_read(2,"|".join(answers),filePaths)
     
-    # DAL.eraseUserData(username)
-    return render_template("solutions.html",answers=solutions)
+    DAL.eraseUserData(username)
+    return render_template("solutions.html",answers=solutions,images=filePaths)
 
 
 

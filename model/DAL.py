@@ -1,4 +1,5 @@
 import os;
+import shutil
 import json;
 
 UPLOAD_FOLDER = 'database/images'
@@ -8,8 +9,8 @@ def saveFile(file, username:str, filename) -> None:
 
 def eraseUserData(username:str):
     if os.path.exists(os.path.join(UPLOAD_FOLDER+ "/" , username)):
-        os.remove(os.path.join(UPLOAD_FOLDER+ "/" , username))
-    os.mkdir(os.path.join(UPLOAD_FOLDER+ "/" , username))
+        shutil.rmtree(os.path.join(UPLOAD_FOLDER+ "/" , username))
+        os.mkdir(os.path.join(UPLOAD_FOLDER+ "/" , username))
 
 def set_sb() -> None:
     """
@@ -64,6 +65,4 @@ def get_users_as_list() -> list:
 
 def get_file_paths(username:str) -> list[str]:
     filesnames:list[str] = os.listdir(os.path.join(UPLOAD_FOLDER+ "/" + username))
-    print(1)
-    print([UPLOAD_FOLDER + "/" + username + "/" + x for x in filesnames])
     return [UPLOAD_FOLDER + "/" + username + "/" + x for x in filesnames]
