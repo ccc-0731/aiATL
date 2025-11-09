@@ -4,6 +4,11 @@ import autogen
 from autogen import AssistantAgent, LLMConfig
 from autogen.tools.experimental import YoutubeSearchTool
 import json
+import re
+
+def extract_urls(text):
+    url_pattern = r'https?://[^\s]+'
+    return re.findall(url_pattern, text)
 load_dotenv()
 def promptToVideos(prompt:str):
     llm_config = LLMConfig(
@@ -32,9 +37,15 @@ def promptToVideos(prompt:str):
     max_turns=2,
     user_input=False,
     )
+    response.process()
     
-    
-    return response.messages
+    urls = extract_urls(str(assistant.chat_messages))
+
+    clean_urls = []
+    for x in urls:
+        clean_urls.append(x[0:-3])
+    # urls = urls.remove("\\,")
+    return clean_urls
 
 
     #return dict(assistant.chat_messages)
