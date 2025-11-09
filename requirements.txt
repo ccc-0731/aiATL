@@ -7,4 +7,3 @@ google-genai
 validators
 gunicorn
 elevenlabs
-shutil

@@ -26,10 +26,8 @@ def index():  # put application's code here
     #adds username to the session cookie which just acts as a dictionary
     username = session["username"]
     #renders index
-    return render_template('index.html')
-@app.route('/test_questions')
-def test_questions():
-    return render_template('questions.html', testQuestions=["test1", "test2"])
+    return render_template('index.html',username=username)
+
 #renders a login form to get a username
 @app.route('/login_form', methods=['POST'])
 def loginForm():
