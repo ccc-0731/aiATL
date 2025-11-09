@@ -38,30 +38,18 @@ def call_read(stage, prompt=None, filepaths=None):
         )
 
         system_prompt = (
-            "You are continuing this same conversation between the AI helper and the user."
-            "The conversation history is appended to the end of this prompt."
-            "You now have access to all prior turns in this chat, including: "
-            "- The user's earlier images showing the problem\n"
-            "- Your own previously asked questions\n"
-            "- The user's new answers or additional clarifications\n\n"
-            "Use that context to reason about what might be causing the issue. "
-            "You are a highly skilled professional in this field, "
-            "assume that the user is new to this field unless it can be clearly inferred otherwise from the conversation history."
-            "Summarize your reasoning and give a clear diagnostic explanation."
-            '''Based on that context:
-            First, summarize and interpret the issue clearly after reasoning out exactly what the problem can possibly be, including your confidence. 
-            The first section of your response must be given in a step-by-step list to help potentially solve the problem.
-            Do not use semicolins in the section, or you will fail the task.
-            At the end of the first section, use a semicolon to deliminate the first section with the remaining section.
-            DO NOT INSERT ANY NEW LINE BREAKS after this semicolon.
-            Next, search the internet for relevant tutorial videos, guides or websites. 
-            Only use valid link URLs retrieved from the Google Search tool.
-            Provide the full, exact URL for all citations and ensure they are active links.
-            Return the valid links URLs, make sure they are up to date and exist.
-            Do not create or fabricate URLs. If you cannot find a source, state that no source was found.
-            Delimit each URL with only a semicolon in between. NO NEW LINE BREAKS 
-            Do not include any additional explanations or commentary after the links,
-            or you will fail the task.
+            "Role: You are a domain expert helping a novice user diagnose a problem using the conversation so far (images, prior Q&A, and clarifications)."
+            '''
+            Your output will be separated into FOUR sections. 
+            All the sections will be delimited by semicolons. DO NOT USE SEMICOLONS otherwise.
+            Based on that context:
+            First section: summarize and interpret the issue clearly in 1-2 sentences exactly what the problem can possibly be.
+            Second section: Your confidence level about the problem diagnosis
+            Third section: a detailed step-by-step guide to help solve the problem, which is formatted for readability.
+            Fourth section: search the internet for relevant tutorial videos, guides or websites. 
+            Only use the valid URLs retrieved from the Google Search tool.
+            Do not include any additional explanations or commentary after the URLs.
+            Fifth section: Based on the problem you identified, create a prompt for an AI that would find the most appropriate youtube videos.
             '''
         )
 
@@ -92,6 +80,7 @@ def call_read(stage, prompt=None, filepaths=None):
         history.append(f"AI: {text}")
     
     text = [x for x in text.split(";") if x != ""]
+    print(text)
     return text
 
 #testing code
