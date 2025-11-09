@@ -120,5 +120,5 @@ def getSolutions():
     return render_template('solutionsIframePotential.html', solutions=result["solutions"])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0")
 
