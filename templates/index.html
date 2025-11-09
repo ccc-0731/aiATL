@@ -38,24 +38,66 @@
     </form>
   </div>
 
-  <!-- ====== Bear Loading GIF (static/images) ====== -->
-<div id="bearLoading" style="
-  display:none;
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:white;
-  z-index:9999;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  text-align:center;
-">
-  <img src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation" style="width:300px;">
-  <h2 style="margin-top:20px; color:#333; font-family:system-ui, sans-serif;">
-    Processing your submission...
-  </h2>
+<div id="bearLoading">
+  <picture>
+  <source srcset="{{ url_for('static', filename='images/invertedBearLoading.gif') }}" media="(prefers-color-scheme: dark)">
+  <img id="bearGif" src="{{ url_for('static', filename='images/BearLoading.gif') }}" alt="Bear Loading Animation">
+</picture>
+
+  <h2 id="bearText">Processing your submission...</h2>
 </div>
+
+<style>
+  /* Base layout for the loading overlay */
+  #bearLoading {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: var(--bear-bg);
+  }
+
+  #bearGif {
+    width: 300px;
+    transition: filter 0.3s ease;
+  }
+
+  #bearText {
+    margin-top: 20px;
+    font-family: system-ui, sans-serif;
+    transition: color 0.3s ease;
+  }
+
+  /* Light mode variables */
+  body.lightmode {
+    --bear-bg: white;
+    --bear-text: #333;
+  }
+
+  /* Dark mode variables */
+  body.darkmode {
+    --bear-bg: black;
+    --bear-text: white;
+  }
+
+  /* Apply theme colors dynamically */
+  #bearLoading {
+    background-color: var(--bear-bg);
+  }
+
+  #bearText {
+    color: var(--bear-text);
+  }
+
+</style>
+
+
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -72,5 +114,6 @@
 </script>
 
 <script src="../static/theme_toggle.js"></script>
+
 </body>
 </html>
