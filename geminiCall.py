@@ -42,10 +42,11 @@ def call_read(stage, prompt=None, filepaths=None):
             "Role: You are a domain expert helping a novice diagnose a problem. "
             "Use the prior conversation (images, Q&A) as context. "
             "Return a valid python string with two sections, delimited by a '|'."
-            "It must follow this format:\n\n"
+            "It must follow this format (which separates the two sections):\n\n"
             "RESPONSE | PROMPT"
             "where: The RESPONSE is a short clear summary of the detected problem, and step-by-step fixes."
             "The PROMPT is a detailed description for what youtube videos are relevant."
+            "Apparently, you will only ever use the | once."
         )
 
     # combine prompt
