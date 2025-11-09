@@ -45,7 +45,7 @@ def call_read(stage, prompt=None, filepaths=None):
             "It must follow this format:\n\n"
             "RESPONSE | PROMPT"
             "where: The RESPONSE is a short clear summary of the detected problem, and step-by-step fixes."
-            "The PROMPT is a detailed description for what youtube videos that are relevant."
+            "The PROMPT is a detailed description for what youtube videos are relevant."
         )
 
     # combine prompt
